@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI School Intelligence Command Center</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{margin:0;font-family:Segoe UI,Arial;background:#0f172a;color:#fff}
+header{padding:20px;background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.container{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.card{background:#1e293b;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(0,0,0,.25)}
+.metric{font-size:30px;font-weight:bold}
+.ai{border-left:5px solid #22c55e}
+canvas{background:#fff;border-radius:12px;padding:10px}
+select,input{padding:10px;margin:5px;border-radius:8px}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #334155;padding:6px}
+</style>
+</head>
+<body>
+<header>
+<h1>🏫 AI School Intelligence Command Center</h1>
+<p>Upload the AI_School_Dataset_120_Students.xlsx file</p>
+</header>
+
+<div class="container">
+<input type="file" id="file">
+
+<div class="grid" id="kpis"></div>
+
+<div class="card ai">
+<h2>🤖 Principal AI Copilot</h2>
+<div id="insights">Upload a file to begin analysis.</div>
+</div>
+
+<div class="grid">
+<div class="card"><canvas id="gradeChart"></canvas></div>
+<div class="card"><canvas id="riskChart"></canvas></div>
+</div>
+
+<div class="card">
+<h2>🏆 Top 10 Students</h2>
+<div id="topStudents"></div>
+</div>
+
+<div class="card">
+<h2>🚨 At Risk Students</h2>
+<div id="riskStudents"></div>
+</div>
+
+<div class="card">
+<h2>📋 Dataset Preview</h2>
+<div style="overflow:auto;max-height:400px">
+<table id="tbl"></table>
+</div>
+</div>
+</div>
+
+<script>
+document.getElementById('file').addEventListener('change', e=>{
+ const file=e.target.files[0];
+ const reader=new FileReader();
+ reader.onload=(evt)=>{
+   const wb=XLSX.read(evt.target.result,{type:'array'});
+   const sheet=wb.Sheets[wb.SheetNames[0]];
+   const data=XLSX.utils.sheet_to_json(sheet);
+   analyze(data);
+ };
+ reader.readAsArrayBuffer(file);
+});
+
+function analyze(data){
+ let avgScore=0, avgAtt=0;
+ let riskCounts={Low:0,Moderate:0,High:0};
+
+ data.forEach(r=>{
+   avgScore += Number(r["Overall Score"]||0);
+   avgAtt += Number(r["Attendance %"]||0);
+   riskCounts[r["Risk Level"]] = (riskCounts[r["Risk Level"]]||0)+1;
+ });
+
+ avgScore=(avgScore/data.length).toFixed(1);
+ avgAtt=(avgAtt/data.length).toFixed(1);
+ let health=Math.round((Number(avgScore)+Number(avgAtt))/2);
+
+ document.getElementById('kpis').innerHTML=`
+ <div class='card'><div>Total Students</div><div class='metric'>${data.length}</div></div>
+ <div class='card'><div>Average Score</div><div class='metric'>${avgScore}</div></div>
+ <div class='card'><div>Attendance</div><div class='metric'>${avgAtt}%</div></div>
+ <div class='card'><div>School Health</div><div class='metric'>${health}</div></div>`;
+
+ const top=[...data].sort((a,b)=>b["Overall Score"]-a["Overall Score"]).slice(0,10);
+ document.getElementById("topStudents").innerHTML=top.map(x=>
+   `<p>${x["Student Name"]} — ${x["Overall Score"]}</p>`).join("");
+
+ const risk=data.filter(x=>x["Risk Level"]!="Low").slice(0,20);
+ document.getElementById("riskStudents").innerHTML=risk.map(x=>
+   `<p>${x["Student Name"]} | ${x["Risk Level"]} | Attendance ${x["Attendance %"]}%</p>`).join("");
+
+ document.getElementById("insights").innerHTML=`
+ <b>Executive Summary</b><br>
+ • Average School Score: ${avgScore}<br>
+ • Average Attendance: ${avgAtt}%<br>
+ • High Risk Students: ${riskCounts.High||0}<br>
+ • Moderate Risk Students: ${riskCounts.Moderate||0}<br>
+ • Recommended action: Focus interventions on low attendance and low-performing students.
+ `;
+
+ new Chart(document.getElementById('gradeChart'),{
+ type:'bar',
+ data:{
+ labels:['A+','A','B','C','D'],
+ datasets:[{label:'Grades',data:[
+ data.filter(x=>x["Grade"]=="A+").length,
+ data.filter(x=>x["Grade"]=="A").length,
+ data.filter(x=>x["Grade"]=="B").length,
+ data.filter(x=>x["Grade"]=="C").length,
+ data.filter(x=>x["Grade"]=="D").length
+ ]}]
+ }});
+
+ new Chart(document.getElementById('riskChart'),{
+ type:'pie',
+ data:{
+ labels:Object.keys(riskCounts),
+ datasets:[{data:Object.values(riskCounts)}]
+ }});
+
+ let headers=Object.keys(data[0]);
+ let html="<tr>"+headers.map(h=>"<th>"+h+"</th>").join("")+"</tr>";
+ data.slice(0,50).forEach(r=>{
+  html+="<tr>"+headers.map(h=>"<td>"+(r[h]??"")+"</td>").join("")+"</tr>";
+ });
+ document.getElementById('tbl').innerHTML=html;
+}
+</script>
+</body>
+</html>
