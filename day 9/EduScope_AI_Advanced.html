@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduScope AI Enterprise Edition</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+--bg:#0B1020;--card:rgba(255,255,255,.06);--glass:rgba(255,255,255,.08);
+--primary:#00D9FF;--secondary:#8B5CF6;--success:#00FFB3;
+}
+*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{margin:0;background:linear-gradient(135deg,#0b1020,#121a35);color:#fff}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:260px;background:rgba(255,255,255,.04);backdrop-filter:blur(10px);padding:20px}
+.sidebar h2{color:var(--primary)}
+.sidebar a{display:block;color:#ddd;text-decoration:none;padding:10px;margin:6px 0;border-radius:10px}
+.sidebar a:hover{background:var(--glass)}
+.main{flex:1;padding:20px}
+.topbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.glass{background:var(--card);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin:20px 0}
+.card{padding:18px}
+.big{font-size:28px;font-weight:bold;color:var(--primary)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+input,button,select{padding:10px;border-radius:10px;border:none}
+button{background:var(--primary);cursor:pointer}
+table{width:100%;border-collapse:collapse}
+td,th{padding:8px;border-bottom:1px solid rgba(255,255,255,.1)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.sidebar{display:none}}
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="sidebar">
+<h2>EduScope AI</h2>
+<a href="#">Dashboard</a>
+<a href="#">Students</a>
+<a href="#">Attendance</a>
+<a href="#">Analytics</a>
+<a href="#">Reports</a>
+<a href="#">AI Insights</a>
+<a href="#">Import Center</a>
+<a href="#">Export Center</a>
+</div>
+
+<div class="main">
+<div class="topbar">
+<div class="glass card"><b>School Intelligence Platform</b></div>
+<div class="glass card"><input id="search" placeholder="Search student"></div>
+</div>
+
+<div class="kpis">
+<div class="glass card"><div>Total Students</div><div id="sCount" class="big">0</div></div>
+<div class="glass card"><div>Average Marks</div><div id="avgMarks" class="big">0</div></div>
+<div class="glass card"><div>Pass %</div><div id="passRate" class="big">0%</div></div>
+<div class="glass card"><div>AI Score</div><div id="aiScore" class="big">0</div></div>
+</div>
+
+<div class="glass card">
+<h3>Student Management</h3>
+<input id="name" placeholder="Student Name">
+<input id="marks" type="number" placeholder="Marks">
+<button onclick="addStudent()">Add Student</button>
+<input type="file" id="csvFile">
+<button onclick="importCSV()">Import CSV</button>
+<button onclick="exportCSV()">Export CSV</button>
+<table>
+<thead><tr><th>Name</th><th>Marks</th><th>Action</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="grid">
+<div class="glass card">
+<h3>Performance Analytics</h3>
+<canvas id="marksChart"></canvas>
+</div>
+<div class="glass card">
+<h3>AI Insights</h3>
+<div id="insights"></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+let students = JSON.parse(localStorage.getItem("eduscope_students")||"[]");
+
+function save(){
+ localStorage.setItem("eduscope_students",JSON.stringify(students));
+ render();
+}
+
+function addStudent(){
+ const name=document.getElementById('name').value;
+ const marks=+document.getElementById('marks').value;
+ if(!name)return;
+ students.push({name,marks});
+ save();
+}
+
+function del(i){
+ students.splice(i,1);
+ save();
+}
+
+function render(){
+ let tb=document.getElementById("tbody");
+ tb.innerHTML="";
+ students.forEach((s,i)=>{
+ tb.innerHTML += `<tr><td>${s.name}</td><td>${s.marks}</td>
+ <td><button onclick="del(${i})">Delete</button></td></tr>`;
+ });
+
+ document.getElementById("sCount").innerText=students.length;
+ let avg=students.length?students.reduce((a,b)=>a+b.marks,0)/students.length:0;
+ document.getElementById("avgMarks").innerText=avg.toFixed(1);
+
+ let pass=students.length?students.filter(x=>x.marks>=40).length/students.length*100:0;
+ document.getElementById("passRate").innerText=pass.toFixed(0)+"%";
+
+ document.getElementById("aiScore").innerText=Math.round((avg+pass)/2);
+
+ generateInsights(avg,pass);
+ drawChart();
+}
+
+function generateInsights(avg,pass){
+ let txt=[];
+ if(avg<50) txt.push("Academic performance requires intervention.");
+ else txt.push("Overall academic performance is healthy.");
+
+ if(pass<70) txt.push("Pass percentage is below target.");
+ else txt.push("Pass percentage is strong.");
+
+ let weak=students.filter(s=>s.marks<40).length;
+ txt.push("Students at risk: "+weak);
+
+ document.getElementById("insights").innerHTML=txt.map(x=>"<p>• "+x+"</p>").join("");
+}
+
+let chart;
+function drawChart(){
+ let ctx=document.getElementById('marksChart');
+ let labels=students.map(x=>x.name);
+ let data=students.map(x=>x.marks);
+
+ if(chart) chart.destroy();
+
+ chart=new Chart(ctx,{
+ type:'bar',
+ data:{labels,datasets:[{label:'Marks',data}]}
+ });
+}
+
+function importCSV(){
+ let file=document.getElementById("csvFile").files[0];
+ if(!file) return;
+ let reader=new FileReader();
+ reader.onload=e=>{
+ let rows=e.target.result.trim().split("\\n");
+ rows.slice(1).forEach(r=>{
+ let c=r.split(",");
+ students.push({name:c[0],marks:+c[1]});
+ });
+ save();
+ };
+ reader.readAsText(file);
+}
+
+function exportCSV(){
+ let csv="name,marks\\n"+students.map(s=>`${s.name},${s.marks}`).join("\\n");
+ let blob=new Blob([csv],{type:'text/csv'});
+ let a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='students.csv';
+ a.click();
+}
+
+render();
+</script>
+</body>
+</html>

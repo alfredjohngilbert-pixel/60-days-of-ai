@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduScope MVP</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#0f172a;color:#fff;margin:0;padding:20px}
+.card{background:#1e293b;padding:15px;border-radius:12px;margin:10px 0}
+input,select,button{padding:8px;margin:4px;border-radius:8px;border:none}
+button{cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #334155;padding:6px;text-align:center}
+canvas{background:#fff;border-radius:10px;padding:10px}
+</style>
+</head>
+<body>
+<h1>🎓 EduScope MVP</h1>
+
+<div class="card">
+<h3>School Details</h3>
+<input id="schoolName" placeholder="School Name">
+<input id="year" placeholder="Academic Year">
+</div>
+
+<div class="card">
+<h3>Add Student</h3>
+<input id="name" placeholder="Name">
+<input id="roll" placeholder="Roll">
+<input id="class" placeholder="Class">
+<input id="section" placeholder="Section">
+<input id="attendance" type="number" placeholder="Attendance %">
+<input id="eng" type="number" placeholder="English">
+<input id="math" type="number" placeholder="Math">
+<input id="sci" type="number" placeholder="Science">
+<input id="sst" type="number" placeholder="Social">
+<input id="comp" type="number" placeholder="Computer">
+<button onclick="addStudent()">Add</button>
+</div>
+
+<div class="grid">
+<div class="card"><h2 id="totalStudents">0</h2>Total Students</div>
+<div class="card"><h2 id="avgAttendance">0</h2>Average Attendance</div>
+<div class="card"><h2 id="avgScore">0</h2>Average Score</div>
+</div>
+
+<div class="card">
+<h3>Students</h3>
+<table>
+<thead><tr><th>Name</th><th>Class</th><th>Attendance</th><th>Average</th><th>Delete</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="card">
+<h3>Subject Performance</h3>
+<canvas id="subjectChart"></canvas>
+</div>
+
+<script>
+let students=JSON.parse(localStorage.getItem("eduscope")||"[]");
+
+function save(){
+localStorage.setItem("eduscope",JSON.stringify(students));
+render();
+}
+
+function addStudent(){
+let s={
+name:name.value,
+roll:roll.value,
+className:document.getElementById('class').value,
+section:section.value,
+attendance:+attendance.value||0,
+eng:+eng.value||0,
+math:+math.value||0,
+sci:+sci.value||0,
+sst:+sst.value||0,
+comp:+comp.value||0
+};
+students.push(s);
+save();
+}
+
+function del(i){students.splice(i,1);save();}
+
+function render(){
+tbody.innerHTML="";
+let totalScore=0,totalAtt=0;
+students.forEach((s,i)=>{
+let avg=(s.eng+s.math+s.sci+s.sst+s.comp)/5;
+totalScore+=avg;
+totalAtt+=s.attendance;
+tbody.innerHTML+=`<tr>
+<td>${s.name}</td>
+<td>${s.className}</td>
+<td>${s.attendance}%</td>
+<td>${avg.toFixed(1)}</td>
+<td><button onclick="del(${i})">X</button></td>
+</tr>`;
+});
+
+totalStudents.innerText=students.length;
+avgAttendance.innerText=students.length?(totalAtt/students.length).toFixed(1)+"%":"0";
+avgScore.innerText=students.length?(totalScore/students.length).toFixed(1):"0";
+
+let subs=[0,0,0,0,0];
+students.forEach(s=>{
+subs[0]+=s.eng;subs[1]+=s.math;subs[2]+=s.sci;subs[3]+=s.sst;subs[4]+=s.comp;
+});
+subs=subs.map(v=>students.length?v/students.length:0);
+
+if(window.chart) window.chart.destroy();
+window.chart=new Chart(document.getElementById('subjectChart'),{
+type:'bar',
+data:{
+labels:['English','Math','Science','Social','Computer'],
+datasets:[{label:'Average Marks',data:subs}]
+}
+});
+}
+render();
+</script>
+</body>
+</html>
