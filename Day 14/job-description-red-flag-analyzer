@@ -1,0 +1,52 @@
+# Job Description Red Flag Analyzer
+
+## Overview
+This project analyzes job descriptions and identifies potential hiring risks, positive signals, and overall candidate-job fit.
+
+The system evaluates:
+
+- Salary transparency
+- Role clarity
+- Growth opportunities
+- Company information quality
+- Hiring practices
+- Candidate suitability
+- Risk scoring
+
+## Features
+
+### Red Flag Detection
+- Missing salary information
+- Role creep indicators
+- Unclear responsibilities
+- Lack of growth path
+- Missing company details
+- Burnout warning signs
+
+### Positive Signal Analysis
+- Experience match
+- Skill alignment
+- Location fit
+- Career growth potential
+- Work flexibility
+
+### Risk Assessment
+- Overall risk score
+- Category-wise breakdown
+- Hiring quality evaluation
+- Final recommendation
+
+## Technologies Used
+- Claude AI
+- Prompt Engineering
+- HTML
+- CSS
+- Job Market Research
+
+## Key Learning
+A job description should be evaluated like a business opportunity. Strong candidates assess compensation transparency, role clarity, growth potential, and company credibility before applying.
+
+## Outcome
+Generated a professional Job Description Analysis Dashboard that helps candidates make smarter career decisions.
+
+#60DayClaudeChallenge
