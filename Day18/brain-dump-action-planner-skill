@@ -1,0 +1,127 @@
+# Brain Dump Action Planner Skill
+
+## Overview
+
+The Brain Dump Action Planner Skill helps users organize scattered thoughts, ideas, tasks, and notes into a clear and actionable plan.
+
+Instead of manually sorting through a large brain dump, this skill automatically:
+
+- Extracts actionable tasks
+- Identifies priorities
+- Groups related items
+- Creates a step-by-step action plan
+- Suggests deadlines
+- Highlights quick wins
+
+---
+
+## Features
+
+### Task Extraction
+Converts unstructured notes into actionable tasks.
+
+### Priority Classification
+Categorizes tasks into:
+
+- High Priority
+- Medium Priority
+- Low Priority
+
+### Project Grouping
+Groups similar tasks under common projects or themes.
+
+### Next Actions
+Provides immediate next steps to reduce overwhelm.
+
+### Deadline Suggestions
+Recommends realistic timelines based on urgency.
+
+### Productivity Insights
+Identifies:
+
+- Quick Wins
+- Delegatable Tasks
+- Long-Term Goals
+
+---
+
+## Example Input
+
+I need to update my resume, prepare for interviews,
+finish my portfolio website, call the bank,
+schedule a doctor appointment, and learn SQL.
+
+---
+
+## Example Output
+
+### High Priority
+- Update resume
+- Prepare for interviews
+
+### Medium Priority
+- Finish portfolio website
+- Learn SQL
+
+### Low Priority
+- Call bank
+- Schedule doctor appointment
+
+### Immediate Next Actions
+1. Update resume today
+2. Apply to 5 jobs
+3. Complete portfolio homepage
+
+### Suggested Timeline
+- Today: Resume + Bank Call
+- This Week: Portfolio Website
+- This Month: SQL Learning Plan
+
+---
+
+## Use Cases
+
+- Personal productivity
+- Career planning
+- Student task management
+- Project organization
+- Goal setting
+
+---
+
+## Skill Prompt
+
+You are a Brain Dump Action Planner.
+
+Your job is to transform unstructured thoughts, notes, tasks, worries, ideas, and goals into a structured action plan.
+
+For every input:
+
+1. Extract all actionable items.
+2. Group similar items into categories.
+3. Assign priority levels:
+   - High
+   - Medium
+   - Low
+4. Identify quick wins.
+5. Recommend next actions.
+6. Suggest timelines.
+7. Create a clean action plan.
+
+Output format:
+
+# Summary
+
+# Prioritized Tasks
+
+# Categories
+
+# Quick Wins
+
+# Next Actions
+
+# Suggested Timeline
+
+# Productivity Recommendations
+
+Focus on clarity, organization, and execution.
