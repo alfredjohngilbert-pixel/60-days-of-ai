@@ -1,0 +1,596 @@
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  color: #2c3e50;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  margin-bottom: 30px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #c0392b;
+}
+
+header h1 {
+  font-size: 28px;
+  color: #c0392b;
+  margin-bottom: 8px;
+}
+
+header p {
+  color: #7f8c8d;
+  font-size: 16px;
+}
+
+.section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #3498db;
+}
+
+.section.priority-high {
+  border-left-color: #c0392b;
+}
+
+.section.priority-medium {
+  border-left-color: #e67e22;
+}
+
+.section h2 {
+  font-size: 20px;
+  margin-bottom: 18px;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.badge.high {
+  background: #ffebee;
+  color: #c0392b;
+}
+
+.badge.medium {
+  background: #fff3e0;
+  color: #e67e22;
+}
+
+.badge.low {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+
+.badge.completed {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+
+.badge.pending {
+  background: #e3f2fd;
+  color: #2196f3;
+}
+
+.card {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid #3498db;
+}
+
+.card.high {
+  border-left-color: #c0392b;
+  background: #ffebee;
+}
+
+.card.medium {
+  border-left-color: #e67e22;
+  background: #fff3e0;
+}
+
+.takeaway-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 14px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+}
+
+tr:hover {
+  background: #f8f9fa;
+}
+
+.speaker-label {
+  display: inline-block;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.speaker-director {
+  background: #fff3e0;
+  color: #e67e22;
+}
+
+.speaker-principal {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+
+.summary-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.open-question {
+  background: #fef9c3;
+  border-left-color: #f59e0b;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  border-left: 4px solid #f59e0b;
+}
+
+.risk-item {
+  background: #fee2e2;
+  border-left-color: #dc2626;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  border-left: 4px solid #dc2626;
+}
+
+.decision-item {
+  background: #e0f2fe;
+  border-left-color: #0284c7;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  border-left: 4px solid #0284c7;
+}
+
+.speaker-summary {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.speaker-summary h4 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.speaker-summary ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.speaker-summary li {
+  padding: 6px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.speaker-summary li:before {
+  content: "→ ";
+  color: #3498db;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.attribution-note {
+  background: #f3f4f6;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #666;
+  margin-top: 12px;
+  border-left: 3px solid #9ca3af;
+}
+
+.meta-info {
+  display: flex;
+  gap: 20px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #7f8c8d;
+}
+
+.meta-info span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 22px;
+  }
+
+  .takeaway-grid {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 0;
+  }
+
+  body {
+    padding: 12px;
+  }
+}
+</style>
+
+<div class="container">
+  <header>
+    <h1>🏫 School Safety Discussion – Action Plan</h1>
+    <p>Structured breakdown of Director-Principal safety measures discussion with actions, decisions, and open items.</p>
+    <div class="meta-info">
+      <span>📋 Type: Meeting Transcript</span>
+      <span>👥 Participants: Director, Principal</span>
+      <span>🎯 Focus: Student Safety Measures</span>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <div class="section">
+    <h2>📝 Summary</h2>
+    <div class="summary-text">
+      A discussion between the Director and Principal focused on strengthening student safety policies in response to parental concerns. Key areas covered include implementing stricter visitor management, enhanced student supervision during transitions, digital checkout systems for student releases, transportation safety monitoring, and emergency preparedness protocols. The Principal committed to preparing an official circular and ensuring immediate implementation across all school departments.
+    </div>
+  </div>
+
+  <!-- KEY TAKEAWAYS -->
+  <div class="section">
+    <h2>✨ Key Takeaways</h2>
+    <div class="takeaway-grid">
+      <div class="card">
+        <strong>Current Gap:</strong> Visitors entering campus with minimal verification
+      </div>
+      <div class="card">
+        <strong>Supervision Issue:</strong> Lack of additional staff during recess and transitions
+      </div>
+      <div class="card">
+        <strong>Release Control:</strong> No formal system for student release authorization
+      </div>
+      <div class="card">
+        <strong>Transportation Risk:</strong> School buses lack stricter monitoring protocols
+      </div>
+      <div class="card">
+        <strong>Emergency Readiness:</strong> Need for regular drills and safety awareness
+      </div>
+      <div class="card">
+        <strong>Priority Level:</strong> All measures to be implemented immediately
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section priority-high">
+    <h2>🚀 Action Items</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Owner</th>
+          <th>Deadline</th>
+          <th>Status</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Implement mandatory ID verification and visitor passes</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge high">🔴 High</span></td>
+        </tr>
+        <tr>
+          <td><strong>Assign additional staff during recess and transitions</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge high">🔴 High</span></td>
+        </tr>
+        <tr>
+          <td><strong>Implement permission slips for classroom departures</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge high">🔴 High</span></td>
+        </tr>
+        <tr>
+          <td><strong>Set up digital checkout system for student release</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge high">🔴 High</span></td>
+        </tr>
+        <tr>
+          <td><strong>Arrange regular school bus inspections</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge medium">🟠 Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Implement attendance checks during bus travel</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge medium">🟠 Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Conduct safety training for drivers and attendants</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge medium">🟠 Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Conduct monthly emergency drills</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Monthly (ongoing)</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge high">🔴 High</span></td>
+        </tr>
+        <tr>
+          <td><strong>Provide safety awareness sessions for students and staff</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Ongoing</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge medium">🟠 Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Prepare official safety circular and distribute</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge high">🔴 High</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ensure all departments cooperate and implement measures</strong></td>
+          <td><span class="speaker-label speaker-principal">Principal</span></td>
+          <td>Immediate</td>
+          <td><span class="badge pending">⏳ Pending</span></td>
+          <td><span class="badge high">🔴 High</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DECISIONS MADE -->
+  <div class="section">
+    <h2>✅ Decisions Made</h2>
+    <div class="decision-item">
+      <strong>Visitor Management System:</strong> Mandatory ID verification and visitor passes for all individuals entering campus, including parents during school hours.
+    </div>
+    <div class="decision-item">
+      <strong>Student Supervision Enhancement:</strong> Additional staff assignment during recess and transition periods; permission slips required for classroom departures during instructional hours.
+    </div>
+    <div class="decision-item">
+      <strong>Student Release Protocol:</strong> Digital checkout system implemented with parent/guardian verification before student release; security personnel cross-check records at gate.
+    </div>
+    <div class="decision-item">
+      <strong>Transportation Safety:</strong> Regular bus inspections, attendance checks during travel, and additional training for drivers and attendants on safety protocols.
+    </div>
+    <div class="decision-item">
+      <strong>Emergency Preparedness:</strong> Monthly emergency drills and safety awareness sessions for students and staff.
+    </div>
+    <div class="decision-item">
+      <strong>Implementation Timeline:</strong> All measures to be implemented immediately with official circular from Principal.
+    </div>
+  </div>
+
+  <!-- DECISIONS BY SPEAKER -->
+  <div class="section">
+    <h2>💬 Decisions by Speaker</h2>
+    
+    <div class="speaker-summary">
+      <h4><span class="speaker-label speaker-director">Director</span> Initiatives & Directives</h4>
+      <ul>
+        <li>Identified need to strengthen student safety policies due to parental concerns</li>
+        <li>Highlighted issue of visitors entering campus with minimal verification</li>
+        <li>Raised question about student movement within campus</li>
+        <li>Emphasized no student should leave without proper authorization</li>
+        <li>Prioritized transportation safety monitoring</li>
+        <li>Stressed importance of emergency preparedness</li>
+        <li>Directed Principal to prepare official circular</li>
+        <li>Requested immediate implementation of all measures</li>
+      </ul>
+    </div>
+
+    <div class="speaker-summary">
+      <h4><span class="speaker-label speaker-principal">Principal</span> Commitments & Proposals</h4>
+      <ul>
+        <li>Agreed with need to strengthen safety policies and be more proactive</li>
+        <li>Proposed mandatory ID verification and visitor passes</li>
+        <li>Suggested assigning additional staff during recess and transitions</li>
+        <li>Proposed permission slips for classroom departures</li>
+        <li>Proposed digital checkout system for student releases</li>
+        <li>Offered to arrange regular bus inspections and safety training</li>
+        <li>Committed to monthly emergency drills and safety awareness sessions</li>
+        <li>Committed to preparing official circular</li>
+        <li>Assured full departmental cooperation</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ACTION ITEMS BY SPEAKER -->
+  <div class="section">
+    <h2>🎯 Action Items by Speaker</h2>
+    
+    <div class="speaker-summary">
+      <h4><span class="speaker-label speaker-director">Director</span> Assigned Actions</h4>
+      <p style="color: #888; font-size: 14px; margin: 0;">No direct action items assigned to Director. Director set strategic direction and oversight role.</p>
+    </div>
+
+    <div class="speaker-summary">
+      <h4><span class="speaker-label speaker-principal">Principal</span> Assigned Actions</h4>
+      <ul>
+        <li>Implement mandatory visitor verification system and passes</li>
+        <li>Assign additional supervision staff during recess and transitions</li>
+        <li>Introduce permission slip requirement for classroom departures</li>
+        <li>Develop and implement digital checkout system for student release</li>
+        <li>Arrange regular school bus inspections</li>
+        <li>Implement attendance checks during bus travel</li>
+        <li>Provide safety training for bus drivers and attendants</li>
+        <li>Schedule and conduct monthly emergency drills</li>
+        <li>Organize safety awareness sessions for students and staff</li>
+        <li>Prepare official safety circular for distribution</li>
+        <li>Ensure all departments cooperate and comply</li>
+      </ul>
+    </div>
+
+    <div class="attribution-note">
+      <strong>Attribution Note:</strong> All action items are clearly assigned to the Principal with explicit directives from the Director to implement immediately and ensure departmental cooperation.
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <h2>❓ Open Questions / Clarifications Needed</h2>
+    <div class="open-question">
+      <strong>Budget & Resources:</strong> No discussion of budget allocation for visitor management system, digital checkout system, or additional staff hiring.
+    </div>
+    <div class="open-question">
+      <strong>Implementation Timeline Details:</strong> While "immediate" is the directive, specific start dates and phasing sequence not specified.
+    </div>
+    <div class="open-question">
+      <strong>Technology Specifications:</strong> Digital checkout system mentioned but no details on software/platform requirements specified.
+    </div>
+    <div class="open-question">
+      <strong>Staff Training Schedule:</strong> Timeline for training additional supervision staff not specified.
+    </div>
+    <div class="open-question">
+      <strong>Emergency Drill Schedule:</strong> Specific dates and scenarios for monthly emergency drills not determined.
+    </div>
+    <div class="open-question">
+      <strong>Parent Communication Plan:</strong> No discussion of how to communicate these new policies to parents.
+    </div>
+    <div class="open-question">
+      <strong>Monitoring & Accountability:</strong> No metrics or KPIs defined to measure success of implemented measures.
+    </div>
+  </div>
+
+  <!-- RISKS & BLOCKERS -->
+  <div class="section">
+    <h2>⚠️ Risks, Blockers & Dependencies</h2>
+    <div class="risk-item">
+      <strong>Implementation Scope:</strong> Multiple simultaneous initiatives (visitor system, digital checkout, transportation changes, emergency drills) may overwhelm staff if not phased properly.
+    </div>
+    <div class="risk-item">
+      <strong>Technology Dependency:</strong> Digital checkout system requires reliable software/hardware infrastructure and IT support.
+    </div>
+    <div class="risk-item">
+      <strong>Staff Capacity:</strong> Need for additional supervision staff during recess/transitions assumes budget availability and staffing capacity.
+    </div>
+    <div class="risk-item">
+      <strong>Parent Compliance:</strong> New visitor policies and student release procedures may face resistance from parents unfamiliar with new processes.
+    </div>
+    <div class="risk-item">
+      <strong>Transportation Coordination:</strong> Bus inspections, attendance tracking, and driver training requires coordination with transport vendors/contractors.
+    </div>
+    <div class="risk-item">
+      <strong>No Contingency Plan:</strong> No discussion of how to handle non-compliance or implementation delays.
+    </div>
+  </div>
+
+  <!-- CONFLICTS -->
+  <div class="section">
+    <h2>⚔️ Conflicts & Contradictions</h2>
+    <p style="color: #888; font-size: 14px; margin-bottom: 14px;">No direct conflicts detected in the discussion. The conversation shows alignment between Director and Principal on all proposed measures and priorities.</p>
+  </div>
+
+  <!-- ADDITIONAL NOTES -->
+  <div class="section">
+    <h2>📌 Additional Notes & Context</h2>
+    <div class="card">
+      <strong>Stakeholder Alignment:</strong> Both Director and Principal express strong commitment to student safety as "highest priority." No opposing views or hesitation noted.
+    </div>
+    <div class="card">
+      <strong>Parent Concerns Trigger:</strong> Discussion initiated due to increasing parental concerns about campus security, indicating external pressure for action.
+    </div>
+    <div class="card">
+      <strong>Current Systems Assessment:</strong> Principal noted that current systems are "functioning well" but improvements needed in proactive areas (visitor access, supervision, authorization).
+    </div>
+    <div class="card">
+      <strong>Operational Philosophy:</strong> Emphasis on comprehensive approach covering multiple safety domains (access control, supervision, release authorization, transportation, emergency preparedness).
+    </div>
+    <div class="card">
+      <strong>Implementation Authority:</strong> All implementation responsibility delegated to Principal with directive to secure departmental cooperation.
+    </div>
+  </div>
+</div>
