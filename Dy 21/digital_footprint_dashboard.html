@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Footprint Intelligence Dashboard</title>
+<style>
+:root{--bg:#0b1020;--card:#121a30;--card2:#182341;--text:#f3f6ff;--muted:#9fb0d1;--green:#27c281;--yellow:#f5c451;--orange:#ff944d;--red:#ff5d73;}
+*{box-sizing:border-box;font-family:Inter,Segoe UI,sans-serif}
+body{background:linear-gradient(135deg,#08101f,#121b35);color:var(--text);padding:24px;margin:0}
+.dashboard{max-width:1400px;margin:auto;display:grid;gap:20px}
+.hero,.card,.footer{border-radius:20px}
+.hero{background:linear-gradient(135deg,#182341,#0f1830);padding:30px}
+.card{background:var(--card);padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.metric{font-size:42px;font-weight:700}
+.badge{display:inline-block;padding:6px 12px;border-radius:999px;background:rgba(255,148,77,.15);color:#ff944d}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+.footer{background:#17203d;padding:25px}
+</style>
+</head>
+<body>
+<div class="dashboard">
+<div class="hero">
+<h1>🔐 Digital Footprint Intelligence Dashboard</h1>
+<p>Premium Cybersecurity & Privacy Exposure Assessment</p>
+</div>
+
+<div class="grid">
+<div class="card"><h3>Digital Footprint Score</h3><div class="metric">72/100</div><div class="badge">🟠 Significant</div></div>
+<div class="card"><h3>Privacy Score</h3><div class="metric">48/100</div><div class="badge">🟠 Fair</div></div>
+<div class="card"><h3>Total Services Used</h3><div class="metric">13</div></div>
+<div class="card"><h3>Parent Companies</h3><div class="metric">9</div></div>
+</div>
+
+<div class="card">
+<h2>Company Exposure Ranking</h2>
+<table>
+<tr><th>Company</th><th>Exposure</th></tr>
+<tr><td>Google</td><td>Very High</td></tr>
+<tr><td>Meta</td><td>Very High</td></tr>
+<tr><td>ByteDance</td><td>High</td></tr>
+<tr><td>Amazon</td><td>High</td></tr>
+<tr><td>Apple</td><td>Medium</td></tr>
+</table>
+</div>
+
+<div class="footer">
+<h2>Final Verdict</h2>
+<p>Digital Footprint Score: 72/100 | Privacy Score: 48/100</p>
+<p>No private databases were accessed. Estimates are derived only from the supplied services dataset.</p>
+</div>
+</div>
+</body>
+</html>
