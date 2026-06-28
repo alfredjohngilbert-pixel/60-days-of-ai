@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Sustainability Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+padding:40px 20px;
+color:#1e293b;
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+}
+
+.header{
+background:linear-gradient(135deg,#1e3c72,#2a5298);
+padding:40px;
+border-radius:20px;
+color:white;
+margin-bottom:35px;
+box-shadow:0 10px 30px rgba(30,60,114,0.2);
+}
+
+.header h1{
+font-size:42px;
+font-weight:800;
+letter-spacing:-0.5px;
+}
+
+.header p{
+margin-top:12px;
+font-size:18px;
+opacity:0.9;
+}
+
+.verdict{
+display:inline-block;
+margin-top:20px;
+padding:12px 24px;
+border-radius:30px;
+background:#22c55e;
+font-weight:700;
+box-shadow:0 4px 12px rgba(34,197,94,0.3);
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+border-radius:18px;
+padding:28px;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+transition:transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 15px 35px rgba(0,0,0,0.12);
+}
+
+.card h2{
+margin-bottom:18px;
+font-size:24px;
+color:#1d4ed8;
+}
+
+.card ul{
+padding-left:20px;
+line-height:1.9;
+}
+
+.card li{
+margin-bottom:8px;
+}
+
+.flow{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+align-items:center;
+}
+
+.step{
+background:#2563eb;
+color:white;
+padding:12px 18px;
+border-radius:10px;
+font-weight:600;
+font-size:14px;
+}
+
+.arrow{
+font-size:28px;
+color:#2563eb;
+}
+
+.progress{
+margin:18px 0;
+background:#e2e8f0;
+height:14px;
+border-radius:20px;
+overflow:hidden;
+}
+
+.bar{
+height:14px;
+border-radius:20px;
+background:linear-gradient(90deg,#22c55e,#15803d);
+transition:width 0.5s ease;
+}
+
+.score{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:18px 0;
+}
+
+.score-name{
+font-weight:600;
+}
+
+.score-value{
+font-weight:700;
+color:#16a34a;
+font-size:18px;
+}
+
+.big-score{
+text-align:center;
+font-size:70px;
+font-weight:800;
+color:#16a34a;
+margin:20px 0;
+}
+
+.footer{
+margin-top:35px;
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.footer h2{
+margin-bottom:15px;
+color:#1d4ed8;
+}
+
+.footer hr{
+margin:30px 0;
+border:none;
+border-top:2px solid #e2e8f0;
+}
+
+.badges-container{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-bottom:20px;
+}
+
+.badge{
+display:inline-block;
+padding:10px 18px;
+border-radius:25px;
+background:#e0f2fe;
+color:#0369a1;
+font-weight:600;
+font-size:14px;
+transition:all 0.3s ease;
+cursor:pointer;
+}
+
+.badge:hover{
+background:#0ea5e9;
+color:white;
+transform:scale(1.05);
+}
+
+.footer-text{
+font-size:18px;
+line-height:1.8;
+color:#475569;
+}
+
+@media (max-width:768px){
+.header h1{
+font-size:32px;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.flow{
+flex-direction:column;
+gap:8px;
+}
+
+.arrow{
+display:none;
+}
+
+.step{
+width:100%;
+text-align:center;
+}
+
+.big-score{
+font-size:50px;
+}
+
+body{
+padding:20px 15px;
+}
+
+.card{
+padding:20px;
+}
+
+.header{
+padding:30px 20px;
+}
+}
+
+@media print{
+body{
+background:white;
+padding:15px;
+}
+
+.card{
+box-shadow:none;
+border:1px solid #ddd;
+page-break-inside:avoid;
+}
+
+.header{
+box-shadow:none;
+}
+
+.card:hover{
+transform:none;
+box-shadow:none;
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>Business Sustainability Dashboard</h1>
+<p>Family-Owned School Digital Transformation Strategy</p>
+<div class="verdict">
+🟢 INVESTABLE
+</div>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>🏫 Business Model</h2>
+<ul>
+<li>Family-Owned School</li>
+<li>2300+ Existing Students</li>
+<li>Parents are Primary Customers</li>
+<li>Technology Improves Trust</li>
+<li>Digital Communication Platform</li>
+<li>Retention Driven Growth</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>💰 Revenue Streams</h2>
+<ul>
+<li>Tuition Fees</li>
+<li>Transport</li>
+<li>Books & Uniforms</li>
+<li>Coaching Classes</li>
+<li>Summer Camps</li>
+<li>Digital Courses</li>
+<li>Activities</li>
+<li>Events</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🚀 Go-To-Market Flow</h2>
+<div class="flow">
+<div class="step">Existing Parents</div>
+<div class="arrow">➜</div>
+<div class="step">Referrals</div>
+<div class="arrow">➜</div>
+<div class="step">Admissions</div>
+<div class="arrow">➜</div>
+<div class="step">Retention</div>
+<div class="arrow">➜</div>
+<div class="step">Alumni</div>
+</div>
+</div>
+
+<div class="card">
+<h2>🎯 First 100 Users</h2>
+<ul>
+<li>One Class Pilot</li>
+<li>Teacher Training</li>
+<li>Parent Onboarding</li>
+<li>Collect Weekly Feedback</li>
+<li>Improve UX</li>
+<li>Expand Class by Class</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🛡 Competitive Moat</h2>
+<ul>
+<li>3 Generation Legacy</li>
+<li>2300+ Student Community</li>
+<li>High Parent Trust</li>
+<li>Local Brand Recognition</li>
+<li>Teacher Relationships</li>
+<li>Community Network</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>⚠ Key Risks</h2>
+<ul>
+<li>Low App Adoption</li>
+<li>Teacher Resistance</li>
+<li>Feature Overload</li>
+<li>Competition</li>
+<li>Weak Digital Marketing</li>
+<li>Slow Innovation</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>📊 Investment Scorecard</h2>
+
+<div class="score">
+<div class="score-name">Business Viability</div>
+<div class="score-value">94%</div>
+</div>
+<div class="progress">
+<div class="bar" style="width:94%"></div>
+</div>
+
+<div class="score">
+<div class="score-name">Revenue Potential</div>
+<div class="score-value">88%</div>
+</div>
+<div class="progress">
+<div class="bar" style="width:88%"></div>
+</div>
+
+<div class="score">
+<div class="score-name">GTM Strength</div>
+<div class="score-value">91%</div>
+</div>
+<div class="progress">
+<div class="bar" style="width:91%"></div>
+</div>
+
+<div class="score">
+<div class="score-name">Competitive Strength</div>
+<div class="score-value">86%</div>
+</div>
+<div class="progress">
+<div class="bar" style="width:86%"></div>
+</div>
+
+<div class="score">
+<div class="score-name">Investor Readiness</div>
+<div class="score-value">89%</div>
+</div>
+<div class="progress">
+<div class="bar" style="width:89%"></div>
+</div>
+
+</div>
+
+<div class="card">
+<h2>⭐ Overall Score</h2>
+<div class="big-score">90</div>
+<p style="text-align:center;font-size:22px;font-weight:700;color:#16a34a;">INVESTABLE</p>
+</div>
+
+</div>
+
+<div class="footer">
+<h2>Founder Action Sheet</h2>
+<div class="badges-container">
+<span class="badge">Interview 50 Parents</span>
+<span class="badge">Launch Parent App</span>
+<span class="badge">Measure Engagement</span>
+<span class="badge">Train Teachers</span>
+<span class="badge">Digital Payments</span>
+<span class="badge">Improve Website</span>
+<span class="badge">Referral Campaign</span>
+<span class="badge">Social Media</span>
+<span class="badge">Collect Testimonials</span>
+<span class="badge">3-Year Roadmap</span>
+</div>
+
+<hr>
+
+<h2>Sustainability Verdict</h2>
+<p class="footer-text">
+This business has a strong foundation because it already operates a successful school with a trusted brand and an established parent community. The Parent Connect platform should be used to improve retention, referrals, and operational efficiency rather than as a standalone product. If execution focuses on measurable outcomes and gradual digital expansion, the business has excellent long-term sustainability.
+</p>
+</div>
+
+</div>
+
+<script>
+// Add smooth scroll behavior
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+
+// Animate progress bars on page load
+window.addEventListener('load', () => {
+  document.querySelectorAll('.bar').forEach(bar => {
+    const width = bar.style.width;
+    bar.style.width = '0';
+    setTimeout(() => {
+      bar.style.width = width;
+    }, 100);
+  });
+});
+
+// Add click animation to badges
+document.querySelectorAll('.badge').forEach(badge => {
+  badge.addEventListener('click', function() {
+    this.style.background = '#10b981';
+    this.style.color = 'white';
+    setTimeout(() => {
+      this.style.background = '#e0f2fe';
+      this.style.color = '#0369a1';
+    }, 600);
+  });
+});
+</script>
+
+</body>
+</html>
