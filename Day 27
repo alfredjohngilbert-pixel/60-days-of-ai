@@ -1,0 +1,49 @@
+ Day 27 – Prior Authorization Story Simulator
+
+🎯 Challenge
+
+Build a Prior Authorization Story Simulator using Claude AI to explain how the healthcare prior authorization process works through an interactive conversation.
+
+📖 Project Overview
+
+Today I created a simulator that walks users through the complete Prior Authorization (PA) journey—from the initial request to approval, denial, appeal, and final resolution.
+
+Instead of presenting information as a long article, the simulator uses a conversation between a patient (Alfred) and a Healthcare Operations Specialist (J✨🐣🧿🧸), making a complex healthcare workflow easy to understand.
+
+💡 What I Learned
+
+One of the biggest lessons from this project is that Prior Authorization is not just paperwork.
+
+A single missing clinical document or incomplete medical record can delay treatment, even when the treatment is medically appropriate.
+
+Good documentation:
+
+* Reduces delays
+* Prevents avoidable denials
+* Improves patient outcomes
+* Makes the appeal process easier
+
+🛠️ Technologies Used
+
+* Claude AI
+* HTML5
+* CSS3
+* JavaScript
+* Prompt Engineering
+
+✨ Features
+
+* Interactive conversation-based learning
+* Multi-scene healthcare workflow
+* Prior Authorization explanation
+* Denial and appeal simulation
+* Responsive web design
+* Clean UI/UX
+
+🚀 Key Takeaways
+
+* Understanding Prior Authorization workflow
+* Learning why denials occur
+* Exploring the appeal process
+* Recognizing the importance of accurate documentation
+* Using AI to simplify complex healthcare concepts
