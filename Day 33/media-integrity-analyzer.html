@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Integrity Analyzer</title>
+<style>
+  :root{
+    --bg:#07120f;
+    --bg-alt:#0c1a15;
+    --panel:#0f221b;
+    --panel-2:#122a21;
+    --border:#1c3a2e;
+    --emerald:#2ecc8f;
+    --emerald-dim:#1f9d6f;
+    --emerald-glow:rgba(46,204,143,0.35);
+    --gold:#e8c468;
+    --red:#e0596b;
+    --text:#e8f3ee;
+    --text-dim:#93aca1;
+    --text-faint:#5f7a70;
+    --radius:16px;
+    --shadow: 0 20px 60px rgba(0,0,0,0.45);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 20% -10%, rgba(46,204,143,0.10), transparent 40%),
+      radial-gradient(circle at 100% 0%, rgba(232,196,104,0.06), transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family: 'Georgia', 'Iowan Old Style', 'Times New Roman', serif;
+    min-height:100vh;
+    line-height:1.6;
+  }
+
+  .app{
+    max-width:960px;
+    margin:0 auto;
+    padding:32px 20px 100px;
+  }
+
+  header.top{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-bottom:36px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .brand .mark{
+    width:44px;height:44px;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--emerald), var(--emerald-dim));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:bold;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    color:#04140d;
+    font-size:20px;
+    box-shadow:0 8px 24px var(--emerald-glow);
+    flex-shrink:0;
+  }
+  .brand h1{
+    font-size:26px;
+    margin:0;
+    letter-spacing:0.3px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight:700;
+  }
+  .brand p{
+    margin:2px 0 0;
+    color:var(--text-dim);
+    font-size:14px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .progress-track{
+    width:100%;
+    height:8px;
+    background:var(--panel);
+    border-radius:99px;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--emerald-dim), var(--emerald));
+    border-radius:99px;
+    transition:width 0.6s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 0 12px var(--emerald-glow);
+  }
+  .progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-top:6px;
+  }
+
+  .metrics-bar{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:36px;
+  }
+  .metric-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 12px;
+    text-align:center;
+    transition:transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .metric-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  }
+  .metric-card .label{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  .metric-card .value{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:22px;
+    font-weight:700;
+    color:var(--emerald);
+  }
+  .metric-card .bar{
+    margin-top:8px;
+    height:5px;
+    background:var(--bg-alt);
+    border-radius:99px;
+    overflow:hidden;
+  }
+  .metric-card .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--emerald-dim), var(--emerald));
+    width:0%;
+    transition:width 0.8s ease;
+  }
+
+  section.card{
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:32px;
+    margin-bottom:28px;
+    box-shadow:var(--shadow);
+    opacity:0;
+    transform:translateY(16px);
+    animation:riseIn 0.6s ease forwards;
+  }
+  @keyframes riseIn{
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .tag{
+    display:inline-block;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    color:var(--emerald);
+    border:1px solid var(--emerald-dim);
+    background:rgba(46,204,143,0.08);
+    padding:4px 10px;
+    border-radius:99px;
+    margin-bottom:14px;
+  }
+
+  h2.section-title{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:24px;
+    margin:0 0 10px;
+    color:var(--text);
+  }
+
+  .lesson-box{
+    background:var(--bg-alt);
+    border-left:3px solid var(--emerald);
+    border-radius:8px;
+    padding:16px 18px;
+    margin:18px 0 26px;
+    font-size:15px;
+    color:var(--text-dim);
+  }
+  .lesson-box strong{color:var(--text);}
+
+  .scenario{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px;
+    margin-bottom:22px;
+  }
+  .scenario .platform{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:10px;
+  }
+  .scenario .headline{
+    font-size:22px;
+    font-weight:bold;
+    color:var(--text);
+    margin:0 0 12px;
+    font-family: 'Georgia', serif;
+  }
+  .scenario .body-text{
+    color:var(--text-dim);
+    font-size:15.5px;
+  }
+  .scenario .caption{
+    font-size:17px;
+    color:var(--text);
+    font-style:italic;
+  }
+
+  .options-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin:20px 0;
+  }
+  .opt-btn{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:10px 20px;
+    border-radius:99px;
+    cursor:pointer;
+    font-size:14px;
+    transition:all 0.25s ease;
+  }
+  .opt-btn:hover{
+    border-color:var(--emerald);
+    color:var(--emerald);
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px var(--emerald-glow);
+  }
+  .opt-btn.selected{
+    background:var(--emerald);
+    color:#04140d;
+    border-color:var(--emerald);
+    font-weight:bold;
+  }
+
+  textarea, input[type=text]{
+    width:100%;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text);
+    padding:14px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    resize:vertical;
+    min-height:70px;
+    margin-bottom:14px;
+    transition:border-color 0.2s ease;
+  }
+  textarea:focus, input[type=text]:focus{
+    outline:none;
+    border-color:var(--emerald);
+    box-shadow:0 0 0 3px var(--emerald-glow);
+  }
+
+  .primary-btn{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    background:linear-gradient(135deg, var(--emerald), var(--emerald-dim));
+    color:#04140d;
+    border:none;
+    padding:13px 28px;
+    border-radius:10px;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+    letter-spacing:0.3px;
+  }
+  .primary-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 28px var(--emerald-glow);
+  }
+  .primary-btn:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+  }
+  .ghost-btn{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    background:transparent;
+    color:var(--text-dim);
+    border:1px solid var(--border);
+    padding:12px 24px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    transition:all 0.2s ease;
+  }
+  .ghost-btn:hover{
+    border-color:var(--text-dim);
+    color:var(--text);
+  }
+
+  .reveal{
+    margin-top:24px;
+    padding-top:24px;
+    border-top:1px dashed var(--border);
+    opacity:0;
+    max-height:0;
+    overflow:hidden;
+    transition:opacity 0.5s ease;
+  }
+  .reveal.show{
+    opacity:1;
+    max-height:none;
+    animation:riseIn 0.5s ease forwards;
+  }
+
+  .score-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--bg-alt);
+    border:1px solid var(--emerald-dim);
+    border-radius:12px;
+    padding:14px 20px;
+    margin-bottom:18px;
+  }
+  .score-badge .num{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:32px;
+    font-weight:800;
+    color:var(--emerald);
+  }
+  .score-badge .desc{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+  }
+
+  .highlight-mismatch{
+    background:rgba(224,89,107,0.18);
+    color:#f2a3ad;
+    padding:1px 4px;
+    border-radius:4px;
+  }
+  .highlight-emotion{
+    background:rgba(232,196,104,0.18);
+    color:var(--gold);
+    padding:1px 4px;
+    border-radius:4px;
+  }
+
+  .info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:18px 0;
+  }
+  .info-block{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .info-block .k{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  .info-block .v{
+    font-size:14.5px;
+    color:var(--text);
+  }
+
+  .rewrite-box{
+    background:rgba(46,204,143,0.08);
+    border:1px solid var(--emerald-dim);
+    border-radius:10px;
+    padding:16px 18px;
+    margin:16px 0;
+    font-size:16px;
+    color:var(--text);
+    font-style:italic;
+  }
+
+  .takeaway{
+    background:var(--bg-alt);
+    border-left:3px solid var(--gold);
+    border-radius:8px;
+    padding:14px 18px;
+    margin-top:16px;
+    font-size:14.5px;
+    color:var(--text-dim);
+  }
+  .takeaway strong{color:var(--gold);}
+
+  .word-chip{
+    display:inline-block;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    padding:6px 12px;
+    margin:4px 6px 4px 0;
+    border-radius:99px;
+    font-size:13px;
+    cursor:pointer;
+    transition:all 0.2s ease;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+  }
+  .word-chip:hover{
+    border-color:var(--gold);
+    color:var(--gold);
+  }
+  .word-chip.picked{
+    background:var(--gold);
+    color:#241a04;
+    border-color:var(--gold);
+    font-weight:bold;
+  }
+
+  .dashboard{
+    text-align:center;
+  }
+  .big-score{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:64px;
+    font-weight:800;
+    background:linear-gradient(135deg, var(--emerald), var(--gold));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin:8px 0;
+  }
+  .habit-list{
+    text-align:left;
+    list-style:none;
+    padding:0;
+    margin:18px 0;
+  }
+  .habit-list li{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 18px;
+    margin-bottom:10px;
+    font-size:14.5px;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .habit-list li .num-badge{
+    background:var(--emerald);
+    color:#04140d;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-weight:800;
+    width:26px;height:26px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    font-size:13px;
+  }
+
+  .hidden{display:none !important;}
+
+  footer.note{
+    text-align:center;
+    color:var(--text-faint);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    margin-top:40px;
+  }
+
+  @media (max-width:640px){
+    .metrics-bar{grid-template-columns:repeat(2,1fr);}
+    .info-grid{grid-template-columns:1fr;}
+    .big-score{font-size:48px;}
+    section.card{padding:22px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="mark">M</div>
+      <div>
+        <h1>Media Integrity Analyzer</h1>
+        <p>A guided lesson in spotting spin, hype, and manipulation</p>
+      </div>
+    </div>
+    <div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label"><span id="progressText">Step 1 of 3</span><span id="progressPct">0%</span></div>
+    </div>
+  </header>
+
+  <div class="metrics-bar">
+    <div class="metric-card">
+      <div class="label">Headline Accuracy</div>
+      <div class="value" id="mHeadline">—</div>
+      <div class="bar"><div class="bar-fill" id="mHeadlineBar"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Source Reliability</div>
+      <div class="value" id="mSource">—</div>
+      <div class="bar"><div class="bar-fill" id="mSourceBar"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Emotional Manipulation</div>
+      <div class="value" id="mEmotion">—</div>
+      <div class="bar"><div class="bar-fill" id="mEmotionBar"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Audience Targeting</div>
+      <div class="value" id="mAudience">—</div>
+      <div class="bar"><div class="bar-fill" id="mAudienceBar"></div></div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="card" id="introCard">
+    <span class="tag">Welcome</span>
+    <h2 class="section-title">Why Media Integrity Matters</h2>
+    <div class="lesson-box">
+      Every day, headlines and posts compete for your attention — and some of them bend the truth to get it.
+      <strong>Media literacy</strong> isn't about distrusting everything. It's about noticing the small signals — word choice,
+      framing, emotional pressure — that separate honest reporting from manipulation. In this lesson, you'll observe two real-feeling
+      scenarios, form your own judgment first, then reveal the analysis behind it.
+    </div>
+    <button class="primary-btn" onclick="goToChallenge(1)">Begin Challenge 1 →</button>
+  </section>
+
+  <!-- CHALLENGE 1 -->
+  <section class="card hidden" id="challenge1Card">
+    <span class="tag">Challenge 1 of 2</span>
+    <h2 class="section-title">🕵️ Headline Detective</h2>
+    <div class="lesson-box">
+      <strong>Concept:</strong> Headlines are written to make you click — sometimes at the cost of accuracy.
+      <strong>Why it matters:</strong> Studies show most people share articles after reading only the headline.
+      A single exaggerated word can spread a distorted idea to thousands of people.
+      <strong>Everyday life:</strong> Think of the last time a headline shocked you, but the actual article said something far more mundane.
+    </div>
+
+    <div class="scenario">
+      <div class="platform" id="c1Platform">Daily Pulse News</div>
+      <div class="headline" id="c1Headline"></div>
+      <div class="body-text" id="c1Body"></div>
+    </div>
+
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:14px; color:var(--text-dim); margin-bottom:6px;">Would you click this headline?</p>
+    <div class="options-row" id="c1ClickOptions">
+      <button class="opt-btn" data-val="Yes">Yes</button>
+      <button class="opt-btn" data-val="Maybe">Maybe</button>
+      <button class="opt-btn" data-val="No">No</button>
+    </div>
+
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:14px; color:var(--text-dim); margin-bottom:6px;">Which part(s) of the headline feel exaggerated or misleading? (type it in your own words)</p>
+    <textarea id="c1UserInput" placeholder="e.g. 'the word EXPLODES seems way too dramatic for a 4% change...'"></textarea>
+
+    <button class="primary-btn" id="c1RevealBtn" onclick="revealChallenge1()">Reveal Analysis</button>
+
+    <div class="reveal" id="c1Reveal">
+      <div class="score-badge">
+        <div class="num" id="c1Score">0%</div>
+        <div class="desc">Headline<br>Accuracy Score</div>
+      </div>
+      <h3 style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px;">What was misleading</h3>
+      <p class="body-text" id="c1Mismatch"></p>
+
+      <h3 style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px;">Why it works this way</h3>
+      <p class="body-text" id="c1Explanation"></p>
+
+      <h3 style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px;">A fairer, more accurate headline</h3>
+      <div class="rewrite-box" id="c1Rewrite"></div>
+
+      <div class="takeaway"><strong>Key takeaway:</strong> <span id="c1Takeaway"></span></div>
+
+      <button class="primary-btn" style="margin-top:22px;" onclick="goToChallenge(2)">Continue to Challenge 2 →</button>
+    </div>
+  </section>
+
+  <!-- CHALLENGE 2 -->
+  <section class="card hidden" id="challenge2Card">
+    <span class="tag">Challenge 2 of 2</span>
+    <h2 class="section-title">💗 Emotion Detector</h2>
+    <div class="lesson-box">
+      <strong>Concept:</strong> Content creators and advertisers often trigger emotions — fear, outrage, envy, urgency —
+      because emotional posts spread faster than neutral ones.
+      <strong>Why it matters:</strong> When you feel something strongly, you're less likely to pause and fact-check.
+      <strong>Everyday life:</strong> Think of a post that made you angry or anxious enough to share it instantly, without reading further.
+    </div>
+
+    <div class="scenario">
+      <div class="platform" id="c2Platform">Social Feed</div>
+      <div class="caption" id="c2Caption"></div>
+    </div>
+
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:14px; color:var(--text-dim); margin-bottom:6px;">How did this make you feel?</p>
+    <div class="options-row" id="c2FeelOptions">
+      <button class="opt-btn" data-val="Anxious">Anxious</button>
+      <button class="opt-btn" data-val="Angry">Angry</button>
+      <button class="opt-btn" data-val="Excited">Excited</button>
+      <button class="opt-btn" data-val="Envious">Envious</button>
+      <button class="opt-btn" data-val="Neutral">Neutral</button>
+    </div>
+
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:14px; color:var(--text-dim); margin-bottom:6px;">Tap the word(s) you think influenced that feeling most:</p>
+    <div id="c2WordChips"></div>
+
+    <button class="primary-btn" style="margin-top:18px;" id="c2RevealBtn" onclick="revealChallenge2()">Reveal Analysis</button>
+
+    <div class="reveal" id="c2Reveal">
+      <div class="info-grid">
+        <div class="info-block">
+          <div class="k">Target Audience</div>
+          <div class="v" id="c2Audience"></div>
+        </div>
+        <div class="info-block">
+          <div class="k">Intended Emotion</div>
+          <div class="v" id="c2Intended"></div>
+        </div>
+        <div class="info-block">
+          <div class="k">Manipulation Technique</div>
+          <div class="v" id="c2Technique"></div>
+        </div>
+        <div class="info-block">
+          <div class="k">Your Reported Feeling</div>
+          <div class="v" id="c2YourFeeling"></div>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px;">Emotionally loaded phrases</h3>
+      <p class="body-text" id="c2Highlighted"></p>
+
+      <h3 style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px;">A neutral rewrite</h3>
+      <div class="rewrite-box" id="c2Rewrite"></div>
+
+      <div class="takeaway"><strong>Key takeaway:</strong> <span id="c2Takeaway"></span></div>
+
+      <button class="primary-btn" style="margin-top:22px;" onclick="goToChallenge(3)">See My Dashboard →</button>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="card hidden dashboard" id="dashboardCard">
+    <span class="tag">Final Report</span>
+    <h2 class="section-title">📊 Media Integrity Dashboard</h2>
+    <div class="big-score" id="overallScore">0%</div>
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; color:var(--text-faint); font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-top:-10px;">Overall Media Integrity Score</p>
+
+    <div class="info-grid" style="text-align:left; margin-top:26px;">
+      <div class="info-block">
+        <div class="k">What You Learned</div>
+        <div class="v" id="dashLearned"></div>
+      </div>
+      <div class="info-block">
+        <div class="k">Biggest Red Flag</div>
+        <div class="v" id="dashRedFlag"></div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px; text-align:left; margin-top:26px;">Three Practical Habits</h3>
+    <ul class="habit-list" id="habitList"></ul>
+
+    <button class="primary-btn" onclick="restartApp()">🔄 Replay with New Scenarios</button>
+  </section>
+
+  <footer class="note">Fully offline · No data leaves your browser · Built for learning, not judgment</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- DATA POOLS ----------
+  const headlineScenarios = [
+    {
+      platform: "Daily Pulse News",
+      headline: "Local Bakery's New Recipe SHOCKS Entire Neighborhood, Experts Baffled",
+      body: "A neighborhood bakery introduced a new sourdough recipe last week. Several regular customers said they liked the slightly tangier taste. The bakery owner said the change came from adjusting the fermentation time by two hours.",
+      mismatch: "The words \"SHOCKS\" and \"Experts Baffled\" imply a dramatic, almost scandalous event, but the article describes a routine recipe tweak that a few customers mildly enjoyed. No experts are mentioned or quoted anywhere in the body.",
+      explanation: "This is a classic case of headline inflation: emotionally charged, vague superlatives (\"shocks\", \"baffled\") are used to manufacture intrigue where none exists in the actual reporting. Because the claims are unfalsifiable and vague, no fact-check can easily disprove them, which makes this tactic common in low-effort clickbait.",
+      rewrite: "Local Bakery Adjusts Sourdough Recipe, Customers Notice Tangier Flavor",
+      takeaway: "When a headline uses big emotional words but the article has no named sources or evidence to back them up, treat it as a red flag, not a fact.",
+      score: 28
+    },
+    {
+      platform: "Tech Wire Daily",
+      headline: "New App Update DESTROYS Battery Life, Users Furious Nationwide",
+      body: "A software update released this week increased battery drain by approximately 6% for some users during video playback, according to a small online forum thread with 40 replies. The company has not yet issued an official statement.",
+      mismatch: "\"DESTROYS\" and \"nationwide\" suggest a widespread crisis affecting the whole country, but the actual evidence is a 6% drain increase reported in one 40-reply forum thread — a tiny, unverified sample.",
+      explanation: "This headline uses scale exaggeration: taking a small, localized data point and stretching the language to suggest national impact. Combined with a strong verb like \"destroys,\" it manufactures urgency around what may be a minor, unconfirmed issue.",
+      rewrite: "Some Users Report Increased Battery Drain After App Update; Company Yet to Comment",
+      takeaway: "Watch for words like \"nationwide,\" \"everyone,\" or \"furious\" attached to evidence that's actually small or anecdotal.",
+      score: 22
+    },
+    {
+      platform: "Wellness Now",
+      headline: "This One Habit Could Add YEARS to Your Life, Doctors Say",
+      body: "A recent observational study found that people who walked for 20 minutes daily had a slightly lower average rate of reported fatigue over a six-month period. Researchers noted the study did not control for diet, sleep, or existing health conditions, and called for further research.",
+      mismatch: "\"Add YEARS to your life\" is a dramatic, unproven leap from a six-month observational study about fatigue, which explicitly did not establish a causal link to longevity, and even said more research is needed.",
+      explanation: "This is a causation-from-correlation error dressed up in confident headline language. Observational studies show association, not proof of cause, especially over a short timeframe with uncontrolled variables. Headlines often skip these caveats entirely because nuance doesn't drive clicks.",
+      rewrite: "Study Finds Daily 20-Minute Walks Linked to Lower Reported Fatigue; More Research Needed",
+      takeaway: "Be skeptical of health headlines that promise dramatic, long-term outcomes (\"years to your life\") based on short-term or preliminary studies.",
+      score: 31
+    }
+  ];
+
+  const emotionScenarios = [
+    {
+      platform: "Instagram Reel Caption",
+      caption: "STOP scrolling. If you don't know this ONE trick, you are already LOSING money every single day. Everyone around you is getting ahead while you wait. Don't let this be the moment you regret.",
+      words: ["STOP scrolling", "LOSING money", "already", "Everyone around you", "regret"],
+      audience: "Adults aged 20–40 anxious about financial security and falling behind peers",
+      intended: "Fear of missing out (FOMO) and financial anxiety",
+      technique: "Urgency + social comparison — implying inaction causes measurable loss and that peers are already succeeding without you",
+      highlighted: "The phrase \"STOP scrolling\" creates urgency, \"already LOSING money\" implies an ongoing loss happening right now, and \"everyone around you\" invokes social comparison to trigger anxiety about being left behind.",
+      rewrite: "Here's a budgeting approach some people have found useful. It won't work for everyone, and there's no guarantee of results.",
+      takeaway: "Posts that combine urgency (\"stop,\" \"now\") with social comparison (\"everyone else\") are engineered to bypass calm thinking. Pause before reacting to either."
+    },
+    {
+      platform: "News Feed Post",
+      caption: "BREAKING: Your neighborhood might not be as safe as you think. Officials refuse to comment. Parents are terrified. Share this before it's too late.",
+      words: ["BREAKING", "not be as safe as you think", "refuse to comment", "terrified", "before it's too late"],
+      audience: "Parents and local residents concerned about family safety",
+      intended: "Fear and protective urgency",
+      technique: "Vague threat framing — no specific incident is named, but ominous language (\"terrified,\" \"too late\") implies imminent danger to trigger a share-first, verify-later response",
+      highlighted: "\"Might not be as safe as you think\" is vague enough to apply to anywhere, \"officials refuse to comment\" implies a cover-up without evidence, and \"before it's too late\" manufactures a false deadline.",
+      rewrite: "Local residents have raised safety questions in a recent community meeting. Officials have not yet responded to requests for comment.",
+      takeaway: "Vague fear-based language with no specific facts (what happened, where, when) is a strong signal of manipulation rather than reporting."
+    },
+    {
+      platform: "Product Promo Caption",
+      caption: "I almost didn't post this because I don't want everyone finding out about this secret... but you deserve to know. Only a few left before this disappears FOREVER.",
+      words: ["almost didn't post this", "secret", "you deserve to know", "a few left", "FOREVER"],
+      audience: "Impulse shoppers and people motivated by exclusivity or scarcity",
+      intended: "Urgency and fear of missing an exclusive opportunity",
+      technique: "Manufactured scarcity — false suggestion of limited availability and insider secrecy to pressure quick action before reflection can happen",
+      highlighted: "\"Almost didn't post this\" and \"secret\" fake exclusivity, while \"a few left\" and \"FOREVER\" manufacture time pressure that's difficult to verify or disprove.",
+      rewrite: "This product is currently available. Stock levels are not publicly confirmed.",
+      takeaway: "Scarcity language (\"only a few left,\" \"disappears forever\") is one of the oldest persuasion tactics — it works by removing your time to think."
+    }
+  ];
+
+  // ---------- STATE ----------
+  let state = {};
+
+  function resetState(){
+    state = {
+      headline: pickRandom(headlineScenarios),
+      emotion: pickRandom(emotionScenarios),
+      c1Click: null,
+      c2Feel: null,
+      c2Words: [],
+      metrics: { headline:null, source:null, emotion:null, audience:null }
+    };
+  }
+
+  function pickRandom(arr){
+    return arr[Math.floor(Math.random()*arr.length)];
+  }
+
+  // ---------- NAVIGATION ----------
+  function goToChallenge(step){
+    document.getElementById('introCard').classList.add('hidden');
+    document.getElementById('challenge1Card').classList.add('hidden');
+    document.getElementById('challenge2Card').classList.add('hidden');
+    document.getElementById('dashboardCard').classList.add('hidden');
+
+    if(step === 1){
+      renderChallenge1();
+      document.getElementById('challenge1Card').classList.remove('hidden');
+      restartCardAnim('challenge1Card');
+      setProgress(1);
+    } else if(step === 2){
+      renderChallenge2();
+      document.getElementById('challenge2Card').classList.remove('hidden');
+      restartCardAnim('challenge2Card');
+      setProgress(2);
+    } else if(step === 3){
+      renderDashboard();
+      document.getElementById('dashboardCard').classList.remove('hidden');
+      restartCardAnim('dashboardCard');
+      setProgress(3);
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function restartCardAnim(id){
+    const el = document.getElementById(id);
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+  }
+
+  function setProgress(step){
+    const pct = step === 1 ? 10 : step === 2 ? 55 : 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('progressText').textContent = 'Step ' + step + ' of 3';
+  }
+
+  function updateMetric(id, val){
+    const el = document.getElementById(id);
+    const bar = document.getElementById(id + 'Bar');
+    el.textContent = val + '%';
+    bar.style.width = val + '%';
+    if(val >= 70){ el.style.color = 'var(--emerald)'; }
+    else if(val >= 40){ el.style.color = 'var(--gold)'; }
+    else { el.style.color = 'var(--red)'; }
+  }
+
+  // ---------- CHALLENGE 1 ----------
+  function renderChallenge1(){
+    const s = state.headline;
+    document.getElementById('c1Platform').textContent = s.platform;
+    document.getElementById('c1Headline').textContent = s.headline;
+    document.getElementById('c1Body').textContent = s.body;
+    document.getElementById('c1UserInput').value = '';
+    document.getElementById('c1Reveal').classList.remove('show');
+    document.getElementById('c1RevealBtn').disabled = false;
+    state.c1Click = null;
+
+    const btns = document.querySelectorAll('#c1ClickOptions .opt-btn');
+    btns.forEach(b => {
+      b.classList.remove('selected');
+      b.onclick = () => {
+        btns.forEach(x => x.classList.remove('selected'));
+        b.classList.add('selected');
+        state.c1Click = b.dataset.val;
+      };
+    });
+  }
+
+  window.revealChallenge1 = function(){
+    const s = state.headline;
+    document.getElementById('c1Score').textContent = s.score + '%';
+    document.getElementById('c1Mismatch').innerHTML = s.mismatch;
+    document.getElementById('c1Explanation').textContent = s.explanation;
+    document.getElementById('c1Rewrite').textContent = '"' + s.rewrite + '"';
+    document.getElementById('c1Takeaway').textContent = s.takeaway;
+    document.getElementById('c1Reveal').classList.add('show');
+    document.getElementById('c1RevealBtn').disabled = true;
+
+    state.metrics.headline = s.score;
+    state.metrics.source = Math.max(15, s.score - 5 + Math.floor(Math.random()*10));
+    updateMetric('mHeadline', state.metrics.headline);
+    updateMetric('mSource', state.metrics.source);
+  };
+
+  // ---------- CHALLENGE 2 ----------
+  function renderChallenge2(){
+    const s = state.emotion;
+    document.getElementById('c2Platform').textContent = s.platform;
+    document.getElementById('c2Caption').textContent = s.caption;
+    document.getElementById('c2Reveal').classList.remove('show');
+    document.getElementById('c2RevealBtn').disabled = false;
+    state.c2Feel = null;
+    state.c2Words = [];
+
+    const btns = document.querySelectorAll('#c2FeelOptions .opt-btn');
+    btns.forEach(b => {
+      b.classList.remove('selected');
+      b.onclick = () => {
+        btns.forEach(x => x.classList.remove('selected'));
+        b.classList.add('selected');
+        state.c2Feel = b.dataset.val;
+      };
+    });
+
+    const chipContainer = document.getElementById('c2WordChips');
+    chipContainer.innerHTML = '';
+    s.words.forEach(w => {
+      const chip = document.createElement('span');
+      chip.className = 'word-chip';
+      chip.textContent = w;
+      chip.onclick = () => {
+        chip.classList.toggle('picked');
+        if(chip.classList.contains('picked')){
+          state.c2Words.push(w);
+        } else {
+          state.c2Words = state.c2Words.filter(x => x !== w);
+        }
+      };
+      chipContainer.appendChild(chip);
+    });
+  }
+
+  window.revealChallenge2 = function(){
+    const s = state.emotion;
+    document.getElementById('c2Audience').textContent = s.audience;
+    document.getElementById('c2Intended').textContent = s.intended;
+    document.getElementById('c2Technique').textContent = s.technique;
+    document.getElementById('c2YourFeeling').textContent = state.c2Feel || 'Not selected';
+    document.getElementById('c2Highlighted').innerHTML = s.highlighted;
+    document.getElementById('c2Rewrite').textContent = '"' + s.rewrite + '"';
+    document.getElementById('c2Takeaway').textContent = s.takeaway;
+    document.getElementById('c2Reveal').classList.add('show');
+    document.getElementById('c2RevealBtn').disabled = true;
+
+    const emotionScore = Math.max(10, 100 - (state.c2Words.length * 12) - 30);
+    const audienceScore = Math.min(95, 60 + state.c2Words.length * 8);
+    state.metrics.emotion = emotionScore;
+    state.metrics.audience = audienceScore;
+    updateMetric('mEmotion', state.metrics.emotion);
+    updateMetric('mAudience', state.metrics.audience);
+  };
+
+  // ---------- DASHBOARD ----------
+  function renderDashboard(){
+    const m = state.metrics;
+    const displayOverall = Math.round(((m.headline||50) + (m.source||50) + (m.emotion||50) + (m.audience||50)) / 4);
+
+    document.getElementById('overallScore').textContent = displayOverall + '%';
+
+    document.getElementById('dashLearned').textContent =
+      "You practiced spotting exaggerated headlines and identifying the specific words designed to trigger emotional reactions before checking facts.";
+
+    const redFlagText = (m.headline < 40)
+      ? "Headline exaggeration disconnected from the article's actual content."
+      : "Emotionally charged language designed to bypass calm, rational thinking.";
+    document.getElementById('dashRedFlag').textContent = redFlagText;
+
+    const habits = [
+      "Read the full article before reacting to or sharing a headline.",
+      "Notice your emotional reaction first — strong feelings are a signal to slow down, not speed up.",
+      "Check whether claims are backed by named sources, data, or experts, not vague authority."
+    ];
+    const list = document.getElementById('habitList');
+    list.innerHTML = '';
+    habits.forEach((h, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = '<span class="num-badge">' + (i+1) + '</span><span>' + h + '</span>';
+      list.appendChild(li);
+    });
+  }
+
+  window.restartApp = function(){
+    resetState();
+    updateMetric('mHeadline', 0);
+    updateMetric('mSource', 0);
+    updateMetric('mEmotion', 0);
+    updateMetric('mAudience', 0);
+    document.getElementById('mHeadline').textContent = '—';
+    document.getElementById('mSource').textContent = '—';
+    document.getElementById('mEmotion').textContent = '—';
+    document.getElementById('mAudience').textContent = '—';
+    document.getElementById('mHeadlineBar').style.width = '0%';
+    document.getElementById('mSourceBar').style.width = '0%';
+    document.getElementById('mEmotionBar').style.width = '0%';
+    document.getElementById('mAudienceBar').style.width = '0%';
+
+    document.getElementById('dashboardCard').classList.add('hidden');
+    document.getElementById('introCard').classList.remove('hidden');
+    restartCardAnim('introCard');
+    setProgress(1);
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressPct').textContent = '0%';
+    document.getElementById('progressText').textContent = 'Step 1 of 3';
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+
+  window.goToChallenge = goToChallenge;
+
+  // ---------- INIT ----------
+  resetState();
+  setProgress(1);
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressPct').textContent = '0%';
+
+})();
+</script>
+</body>
+</html>
