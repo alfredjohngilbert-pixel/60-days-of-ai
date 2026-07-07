@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marketing Detective</title>
+<style>
+:root{--a:#ff8a00;--bg:#141414;--p:#222;--t:#eee}
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--t)}
+header{background:#111;padding:18px;text-align:center}
+main{max-width:1000px;margin:auto;padding:20px}
+.card{background:var(--p);padding:18px;border-radius:12px;margin:16px 0}
+button,select{padding:10px 16px;border:none;border-radius:8px}
+button{background:var(--a);font-weight:bold;cursor:pointer}
+.sticky{display:inline-block;background:#fff7a8;color:#111;padding:10px;margin:8px;border-radius:6px;cursor:grab}
+.zone{border:2px dashed #777;min-height:120px;padding:12px;border-radius:8px}
+.bar{height:14px;background:#444;border-radius:8px;overflow:hidden;margin:8px 0}
+.bar span{display:block;height:100%;background:var(--a)}
+</style>
+</head>
+<body>
+<header><h1>🕵 Marketing Detective</h1></header>
+<main>
+<div class="card">
+<label>Theme:
+<select id="theme">
+<option value="#ff8a00">Claude Orange</option>
+<option value="#00b7ff">Neon Blue</option>
+<option value="#22c55e">Emerald</option>
+<option value="#8b5cf6">Purple</option>
+</select></label>
+<button onclick="newCase()">New Case</button>
+</div>
+
+<div id="game"></div>
+</main>
+<script>
+const mistakes=[
+"Wrong audience targeting","Weak CTA","No A/B testing","Confusing messaging",
+"Poor landing page","Ignoring feedback","Wrong KPI","Budget imbalance",
+"Inconsistent branding","Posting at wrong time"
+];
+const companies=["NovaSpark","PixelPeak","GlowWorks","SwiftLeaf","Orbit Labs","FreshWave","UrbanHive","BrightNest","CloudMint","PulseMart"];
+const cases=[...Array(10)].map((_,i)=>({
+company:companies[i],
+industry:["Retail","Software","Travel","Food","Finance"][i%5],
+objective:"Increase online sales",
+audience:"Young professionals",
+channels:"Instagram, Email, Search",
+budget:"40/30/20/10",
+metrics:{Reach:100000+i*25000,CTR:(1.8+i/4).toFixed(2),Conversions:250+i*40,Sales:80+i*18},
+mistake:mistakes[i],
+clues:[
+"High reach but low conversions",
+"Comments mention confusion",
+"Awareness increased but sales did not"
+],
+explanation:"The campaign failed because of "+mistakes[i].toLowerCase()+". Funnel optimization was missing.",
+improvements:["Improve messaging","Optimize landing page","Test creatives"]
+}));
+let current,found=[];
+document.getElementById("theme").onchange=e=>document.documentElement.style.setProperty("--a",e.target.value);
+function render(){
+document.getElementById("game").innerHTML=`
+<div class="card">
+<h2>${current.company}</h2>
+<p><b>Industry:</b> ${current.industry}<br>
+<b>Objective:</b> ${current.objective}<br>
+<b>Audience:</b> ${current.audience}<br>
+<b>Channels:</b> ${current.channels}</p>
+<div>${current.clues.map(c=>`<div class="sticky" draggable="true" ondragstart="event.dataTransfer.setData('t','${c}')">${c}</div>`).join("")}</div>
+<div class="zone" ondragover="event.preventDefault()" ondrop="dropEv(event)">
+<b>Drop evidence here</b><div id="ev">${found.map(f=>"<p>"+f+"</p>").join("")}</div></div>
+<h3>Solve</h3>
+<select id="guess"><option></option>${mistakes.map(m=>`<option>${m}</option>`).join("")}</select>
+<button onclick="solve()">Submit</button>
+</div>`;
+}
+function dropEv(e){e.preventDefault();let t=e.dataTransfer.getData('t');if(!found.includes(t)){found.push(t);render();}}
+function solve(){
+let g=document.getElementById("guess").value;
+let ok=g===current.mistake;
+document.getElementById("game").innerHTML=`
+<div class="card">
+<h2>${ok?"✅ Case Closed!":"🕵 Investigation Complete"}</h2>
+<p><b>Correct Mistake:</b> ${current.mistake}</p>
+<p>${current.explanation}</p>
+<div class="bar"><span style="width:${Math.min(current.metrics.CTR*20,100)}%"></span></div>
+<p>Reach: ${current.metrics.Reach}<br>CTR: ${current.metrics.CTR}%<br>Conversions: ${current.metrics.Conversions}<br>Sales: ${current.metrics.Sales}</p>
+<h3>Suggested Improvements</h3>
+<ul>${current.improvements.map(i=>"<li>"+i+"</li>").join("")}</ul>
+<button onclick="newCase()">Play Another Case</button>
+</div>`;
+}
+function newCase(){found=[];current=cases[Math.floor(Math.random()*cases.length)];render();}
+newCase();
+</script>
+</body>
+</html>
