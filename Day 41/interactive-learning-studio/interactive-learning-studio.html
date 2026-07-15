@@ -1,0 +1,44 @@
+
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Interactive Learning Studio</title>
+<style>
+body{font-family:Arial;margin:0;background:#111;color:#eee}header{padding:20px;background:#1f2937}
+section{padding:20px;max-width:900px;margin:auto}.card{background:#1b1b1b;padding:16px;border-radius:10px;margin:16px 0}
+button{padding:10px 16px} .hidden{display:none} .ok{color:#6f6}
+progress{width:100%}
+</style></head><body>
+<header><h1>Interactive Learning Studio</h1><p>Modern JavaScript (ES6+) Fundamentals</p><progress id=p max=4 value=1></progress></header>
+<section>
+<div class=card id=m1><h2>Module 1: let & const</h2><p><b>Objective:</b> Learn block scoped variables.</p>
+<pre>const pi=3.14;
+let count=0;</pre>
+<p>Analogy: <i>const</i> is a sealed label; <i>let</i> is a whiteboard.</p>
+<button onclick="showQuiz()">Take Quiz</button></div>
+
+<div class="card hidden" id=q>
+<h2>Quiz</h2>
+<p>Which keyword allows reassignment?</p>
+<label><input type=radio name=q1 value=0>const</label><br>
+<label><input type=radio name=q1 value=1>let</label><br><br>
+<button onclick="grade()">Submit</button>
+<div id=out></div>
+</div>
+
+<div class="card hidden" id=next>
+<h2>Cheat Sheet</h2>
+<ul><li>const: cannot be reassigned</li><li>let: block scoped & reassignable</li><li>Prefer const by default.</li></ul>
+<button onclick="window.print()">Print Notes</button>
+</div>
+<script>
+function showQuiz(){document.getElementById('q').classList.remove('hidden')}
+function grade(){
+let a=document.querySelector('input[name=q1]:checked');
+if(!a){alert('Select an answer');return;}
+let ok=a.value=="1";
+document.getElementById('out').innerHTML=ok?
+'<p class=ok>Correct! let allows reassignment.</p>':
+'<p>Incorrect. const cannot be reassigned.</p>';
+document.getElementById('next').classList.remove('hidden');
+document.getElementById('p').value=4;
+}
+</script>
+</section></body></html>
