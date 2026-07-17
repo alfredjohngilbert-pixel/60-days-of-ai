@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The LinkedIn Case File</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#10151f;
+    --navy-2:#161d2b;
+    --paper:#eeeae1;
+    --paper-dim:#d9d3c4;
+    --red:#c81d3b;
+    --red-dim:#8f1329;
+    --gold:#c9a227;
+    --ink:#1b1b1f;
+    --gray:#8b93a3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--navy);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:48px 20px 100px;}
+  .masthead{
+    text-align:center;
+    border-bottom:2px solid var(--red-dim);
+    padding-bottom:28px;
+    margin-bottom:40px;
+  }
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--red);
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:clamp(32px,6vw,54px);
+    margin:10px 0 6px;
+    line-height:1.05;
+  }
+  .sub{color:var(--gray);font-size:15px;max-width:520px;margin:0 auto;}
+
+  .card{
+    background:var(--navy-2);
+    border:1px solid #26304399;
+    border-radius:4px;
+    padding:32px;
+    margin-bottom:24px;
+  }
+  .stamp{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .stamp::before{content:'';width:8px;height:8px;background:var(--gold);border-radius:50%;display:inline-block;}
+
+  label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--gray);
+    margin:18px 0 6px;
+    letter-spacing:.03em;
+  }
+  label span{color:var(--red);}
+  textarea,input,select{
+    width:100%;
+    background:#0c1119;
+    border:1px solid #2b3550;
+    color:var(--paper);
+    padding:12px 14px;
+    border-radius:3px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    resize:vertical;
+  }
+  textarea:focus,input:focus,select:focus{outline:2px solid var(--red-dim);border-color:var(--red);}
+  textarea{min-height:70px;}
+
+  .btn{
+    font-family:'IBM Plex Mono',monospace;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-size:13px;
+    background:var(--red);
+    color:#fff;
+    border:none;
+    padding:14px 26px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .btn:hover{background:var(--red-dim);}
+  .btn:active{transform:scale(.98);}
+  .btn:disabled{background:#3a4256;cursor:not-allowed;}
+  .btn.secondary{background:transparent;border:1px solid var(--gray);color:var(--gray);}
+  .btn.secondary:hover{border-color:var(--paper);color:var(--paper);}
+
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;}
+
+  .goal-options{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+  .goal-opt{
+    border:1px solid #2b3550;
+    padding:9px 14px;
+    border-radius:20px;
+    font-size:13px;
+    cursor:pointer;
+    color:var(--gray);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .goal-opt.active{border-color:var(--gold);color:var(--gold);background:#c9a22715;}
+
+  /* Report styling */
+  .section-title{
+    font-family:'Fraunces',serif;
+    font-size:26px;
+    font-weight:600;
+    color:var(--paper);
+    margin:0 0 4px;
+  }
+  .section-note{color:var(--gray);font-size:13px;margin-bottom:20px;}
+
+  .scorebar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 16px;background:#0c1119;border-left:3px solid var(--red);
+    margin-bottom:10px;border-radius:2px;
+  }
+  .scorebar .name{font-weight:600;font-size:14px;}
+  .scorebar .score{font-family:'IBM Plex Mono',monospace;color:var(--red);font-weight:600;}
+  .scorebar.after{border-left-color:var(--gold);}
+  .scorebar.after .score{color:var(--gold);}
+
+  .redline{
+    background:#0c1119;
+    border:1px solid #2b3550;
+    border-radius:3px;
+    padding:20px;
+    margin:14px 0;
+    white-space:pre-wrap;
+    font-size:14.5px;
+    line-height:1.7;
+  }
+  .redline h3, .report-body h3{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--red);
+    margin:22px 0 8px;
+  }
+  .report-body h2{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    color:var(--gold);
+    border-top:1px solid #2b3550;
+    padding-top:22px;
+    margin-top:30px;
+  }
+  .report-body h2:first-child{border-top:none;padding-top:0;margin-top:0;}
+  .report-body{white-space:pre-wrap;line-height:1.75;font-size:15px;}
+  .report-body strong{color:var(--gold);}
+
+  .loading-line{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;color:var(--gray);
+    display:flex;align-items:center;gap:10px;
+    padding:20px 0;
+  }
+  .dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite ease-in-out;}
+  .dot:nth-child(2){animation-delay:.15s;}
+  .dot:nth-child(3){animation-delay:.3s;}
+  @keyframes pulse{0%,100%{opacity:.2;}50%{opacity:1;}}
+
+  .step-indicator{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--gray);text-align:center;margin-bottom:20px;letter-spacing:.1em;
+  }
+
+  .final-card{
+    background:linear-gradient(135deg,#161d2b,#0c1119);
+    border:1px solid var(--gold);
+    padding:32px;border-radius:4px;text-align:left;
+  }
+  .final-card .section-title{color:var(--gold);}
+
+  #errorBox{color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:12px;display:none;}
+
+  @media (max-width:600px){.card{padding:22px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="kicker">Case File — Profile Review</div>
+    <h1>The LinkedIn<br>Roast &amp; Rebuild</h1>
+    <p class="sub">Five questions in. One brutally honest report out. Then a 7-day plan to make the profile actually work.</p>
+  </div>
+
+  <!-- INTAKE -->
+  <div class="step-indicator" id="stepIndicator">STEP 1 OF 5</div>
+  <div id="intake">
+    <div class="card" id="q1card">
+      <div class="stamp">Exhibit A</div>
+      <label>Your current headline <span>*</span></label>
+      <input type="text" id="q_headline" placeholder="e.g. Marketing Manager at XYZ School">
+      <div class="row"><button class="btn" onclick="nextStep(1)">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div id="report" style="display:none;"></div>
+
+  <div id="errorBox"></div>
+</div>
+
+<script>
+const state = { headline:'', about:'', experience:'', skills:'', goal:'', goalOther:'' };
+let currentStep = 1;
+
+const steps = [
+  null, // 1-indexed
+  { key:'headline' },
+  { key:'about' },
+  { key:'experience' },
+  { key:'skills' },
+  { key:'goal' }
+];
+
+function renderStep(n){
+  document.getElementById('stepIndicator').textContent = `STEP ${n} OF 5`;
+  const intake = document.getElementById('intake');
+  let html = '';
+  if(n===2){
+    html = `<div class="card">
+      <div class="stamp">Exhibit B</div>
+      <label>About section <span>*</span> — paste the whole thing (or write "I don't have one")</label>
+      <textarea id="q_about" style="min-height:140px" placeholder="Paste your About section here..."></textarea>
+      <div class="row">
+        <button class="btn secondary" onclick="prevStep(2)">← Back</button>
+        <button class="btn" onclick="nextStep(2)">Next →</button>
+      </div>
+    </div>`;
+  } else if(n===3){
+    html = `<div class="card">
+      <div class="stamp">Exhibit C</div>
+      <label>Most recent experience entry <span>*</span> — title, company, and bullets</label>
+      <textarea id="q_experience" style="min-height:140px" placeholder="e.g. Marketing Executive, XYZ School (2022–Present)&#10;- Managed social media accounts&#10;- Assisted in admissions events"></textarea>
+      <div class="row">
+        <button class="btn secondary" onclick="prevStep(3)">← Back</button>
+        <button class="btn" onclick="nextStep(3)">Next →</button>
+      </div>
+    </div>`;
+  } else if(n===4){
+    html = `<div class="card">
+      <div class="stamp">Exhibit D</div>
+      <label>Top skills <span>*</span> — 5 to 10, comma-separated</label>
+      <input type="text" id="q_skills" placeholder="e.g. Marketing Strategy, Admissions, Content Writing, Canva, SEO">
+      <div class="row">
+        <button class="btn secondary" onclick="prevStep(4)">← Back</button>
+        <button class="btn" onclick="nextStep(4)">Next →</button>
+      </div>
+    </div>`;
+  } else if(n===5){
+    html = `<div class="card">
+      <div class="stamp">Exhibit E</div>
+      <label>Target goal <span>*</span></label>
+      <div class="goal-options" id="goalOpts">
+        ${['Land a Job','Attract Clients','Build Thought Leadership','Grow Network'].map(g=>`<div class="goal-opt" data-goal="${g}" onclick="pickGoal('${g}')">${g}</div>`).join('')}
+      </div>
+      <div class="row">
+        <button class="btn secondary" onclick="prevStep(5)">← Back</button>
+        <button class="btn" id="submitBtn" onclick="submitIntake()" disabled>Open the Case File →</button>
+      </div>
+    </div>`;
+  }
+  intake.innerHTML = html;
+}
+
+function pickGoal(g){
+  state.goal = g;
+  document.querySelectorAll('.goal-opt').forEach(el=>{
+    el.classList.toggle('active', el.dataset.goal===g);
+  });
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function nextStep(from){
+  if(from===1){
+    const v = document.getElementById('q_headline').value.trim();
+    if(!v){ alert("Add your headline (or type \"none\" if you don't have one)."); return; }
+    state.headline = v;
+  } else if(from===2){
+    state.about = document.getElementById('q_about').value.trim() || 'None provided';
+  } else if(from===3){
+    const v = document.getElementById('q_experience').value.trim();
+    if(!v){ alert('Add your most recent experience entry.'); return; }
+    state.experience = v;
+  } else if(from===4){
+    const v = document.getElementById('q_skills').value.trim();
+    if(!v){ alert('Add at least a few skills.'); return; }
+    state.skills = v;
+  }
+  currentStep = from+1;
+  renderStep(currentStep);
+}
+function prevStep(from){
+  currentStep = from-1;
+  renderStep(currentStep);
+}
+
+// Step 1 markup is already in the HTML — no need to render it on load.
+
+// ---------- API ----------
+async function callClaude(systemPrompt, userPrompt){
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:1000,
+      system: systemPrompt,
+      messages:[{role:'user', content:userPrompt}]
+    })
+  });
+  if(!res.ok){ throw new Error('API error '+res.status); }
+  const data = await res.json();
+  return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+}
+
+function profileBrief(){
+  return `PROFILE INPUT
+Headline: ${state.headline}
+About: ${state.about}
+Most Recent Experience: ${state.experience}
+Top Skills: ${state.skills}
+Target Goal: ${state.goal}`;
+}
+
+const SYS_BASE = `You are a LinkedIn Optimization Expert and ex-Recruiter who has reviewed 50,000+ profiles. Tone: direct, specific, zero fluff, brutally honest friend who wants the person to succeed. Use ONLY the information given — never invent achievements, roles, companies, or metrics. If something is missing, say what to add instead of fabricating. Output plain text, no markdown code fences. Use simple markdown-ish headers like "## Heading" and "**bold**" sparingly for structure. Be concise enough to fit a short response — this is one part of a longer report, so stay focused only on what's asked.`;
+
+function mdToHtml(text){
+  // minimal safe-ish markdown-ish rendering
+  let esc = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  esc = esc.replace(/^## (.*)$/gm,'<h2>$1</h2>');
+  esc = esc.replace(/^### (.*)$/gm,'<h3>$1</h3>');
+  esc = esc.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  return esc;
+}
+
+async function submitIntake(){
+  document.getElementById('intake').style.display='none';
+  const reportEl = document.getElementById('report');
+  reportEl.style.display='block';
+  reportEl.innerHTML = `
+    <div class="masthead" style="border-bottom:none;margin-bottom:8px;">
+      <div class="kicker">Now Processing</div>
+    </div>
+    <div class="card"><div class="loading-line"><span class="dot"></span><span class="dot"></span><span class="dot"></span>Building your case file — this runs in five parts, hang tight...</div></div>
+  `;
+
+  const parts = [
+    { id:'roast', title:'Part 1 — The Roast', note:'Honest scores. What recruiters actually think in 3 seconds.',
+      prompt: `${profileBrief()}\n\nTASK: Write "PART 1 — THE ROAST". For each of: Headline, About (First 2 Lines), About (Full Section), Experience, Skills & Keywords — give a score out of 10 and the recruiter's real 3-second reaction, quoting their own words back where relevant. For each explain: the specific problem, why it hurts, and the invisible cost. End with "Overall Profile Strength — X/100" and one sentence justifying the number. Use "## " before each of the 5 section names and one final "## Overall Profile Strength".` },
+    { id:'rebuild', title:'Part 2 — The Rebuild', note:'Every section rewritten, with the strategy behind each change.',
+      prompt: `${profileBrief()}\n\nTASK: Write "PART 2 — THE REBUILD". Sections, each with a "## " header:\n## Headline — give 3 options (Keyword-optimized, Value-proposition, Authority) using formula [Role/Identity] | [Who I Help] | [Proof], and one line on when to use which.\n## About Section — full rewrite following Hook / Story / Proof / CTA structure, then list the SEO keywords embedded.\n## Experience — rewrite the top entry's bullets, each shown as "Before: ... → After: ...", leading with achievements and action verbs.\n## Skills — top skills to ADD in priority order, skills to REMOVE, and which 3 to pin.\nStay grounded only in the info given; where data (numbers/results) is missing, say what to add instead of inventing it.` },
+    { id:'scorecard', title:'Part 3 — Before vs After', note:'',
+      prompt: `${profileBrief()}\n\nTASK: Write "PART 3 — BEFORE vs AFTER SCORECARD". For each of Headline, About (Hook), About (Full), Experience, Skills/Keywords give a line in the exact format "SECTION_NAME | before/10 | after/10 | +change". Then a final line "OVERALL | before/100 | after/100 | +change". Just output these lines, one per row, nothing else — no headers, no extra prose.` },
+    { id:'plan', title:'Part 4 — 7-Day Activation Plan', note:'Not just profile edits — actions that get results.',
+      prompt: `${profileBrief()}\n\nTASK: Write "PART 4 — 7-DAY LINKEDIN ACTIVATION PLAN" with a "## Day N — <short title>" header for each of the 7 days:\nDay 1: profile-change checklist.\nDay 2: draft a full "I just rebuilt my LinkedIn" post, under 1300 characters, hook that drives comments.\nDay 3: who to send 10 connection requests to (be specific to their goal/field) + a connection message template under 300 characters.\nDay 4: explain the "Value Comment" formula (Agree + Add Insight + Ask a Question) for commenting on 5 posts.\nDay 5: draft a lessons-learned or hot-take post in their niche, full text.\nDay 6: engaging with comments + 5 more connection requests, brief guidance.\nDay 7: what profile views / acceptance rate numbers mean and what to adjust.` },
+    { id:'summary', title:'Part 5 — What I Learned Today', note:'Shareable summary card.',
+      prompt: `${profileBrief()}\n\nTASK: Write "PART 5 — WHAT I LEARNED TODAY" as a short shareable summary in this exact template, filled in based on the roast/rebuild you'd give this profile:\n"I let AI roast my LinkedIn profile today. Here's what changed:\n\nBefore: X/100\nAfter: Y/100\n\nTop 3 mistakes I was making:\n1. ...\n2. ...\n3. ...\n\nThe #1 thing that made the biggest difference: ..."\nOutput only the filled template, nothing else.` }
+  ];
+
+  let resultsHtml = `<div class="masthead" style="border-bottom:2px solid var(--red-dim);margin-bottom:8px;">
+    <div class="kicker">Case File — Findings</div>
+    <h1 style="font-size:36px;">The Full Report</h1>
+  </div>`;
+
+  try{
+    for(const part of parts){
+      resultsHtml += `<div class="card" id="card_${part.id}"><div class="stamp">${part.title}</div>${part.note?`<p style="color:var(--gray);font-size:13px;margin:-8px 0 14px;">${part.note}</p>`:''}<div class="loading-line"><span class="dot"></span><span class="dot"></span><span class="dot"></span>Drafting ${part.title.toLowerCase()}...</div></div>`;
+    }
+    reportEl.innerHTML = resultsHtml;
+
+    for(const part of parts){
+      const text = await callClaude(SYS_BASE, part.prompt);
+      const cardEl = document.getElementById('card_'+part.id);
+      if(part.id==='scorecard'){
+        const rows = text.trim().split('\n').filter(l=>l.includes('|'));
+        let bars = '';
+        rows.forEach(r=>{
+          const cols = r.split('|').map(c=>c.trim());
+          if(cols.length>=4){
+            const isOverall = /overall/i.test(cols[0]);
+            bars += `<div class="scorebar"><span class="name">${cols[0]}</span><span class="score">${cols[1]} → </span></div>
+                     <div class="scorebar after" style="margin-top:-6px;margin-bottom:16px;"><span class="name">${isOverall?'':''}</span><span class="score">${cols[2]} (${cols[3]})</span></div>`;
+          }
+        });
+        cardEl.innerHTML = `<div class="stamp">${part.title}</div>${bars || `<div class="report-body">${mdToHtml(text)}</div>`}`;
+      } else if(part.id==='summary'){
+        cardEl.innerHTML = `<div class="final-card"><div class="stamp">${part.title}</div><div class="report-body" style="font-size:16px;">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div><p style="color:var(--gray);font-size:12px;margin-top:16px;">↑ Screenshot this and post it.</p></div>`;
+      } else {
+        cardEl.innerHTML = `<div class="stamp">${part.title}</div>${part.note?`<p style="color:var(--gray);font-size:13px;margin:-8px 0 14px;">${part.note}</p>`:''}<div class="report-body">${mdToHtml(text)}</div>`;
+      }
+    }
+  } catch(err){
+    const box = document.getElementById('errorBox');
+    box.style.display='block';
+    box.textContent = 'Something broke while drafting the case file: ' + err.message + '. Try refreshing and re-submitting.';
+  }
+}
+</script>
+</body>
+</html>
