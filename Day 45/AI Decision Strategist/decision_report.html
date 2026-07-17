@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Report — B.Tech CS vs BBA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-main:#0f0f14;
+    --bg-card:#1a1a24;
+    --bg-card-alt:#1e1e2e;
+    --text-primary:#f0f0f5;
+    --text-secondary:#8888a0;
+    --accent-green:#34d399;
+    --accent-red:#f87171;
+    --accent-blue:#60a5fa;
+    --accent-gold:#fbbf24;
+    --accent-purple:#a78bfa;
+    --border-subtle:rgba(255,255,255,0.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg-main);
+    color:var(--text-primary);
+    font-family:'Inter','Segoe UI',system-ui,sans-serif;
+    padding:32px 16px 60px;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  header.banner{text-align:center;padding:12px 8px 28px;}
+  header.banner h1{font-size:28px;font-weight:800;margin:0 0 8px;letter-spacing:0.5px;}
+  header.banner .sub{font-size:16px;color:var(--text-secondary);margin:0 0 6px;}
+  header.banner .date{font-size:12px;color:var(--text-secondary);}
+  .gradient-line{height:2px;margin-top:20px;border-radius:2px;
+    background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-gold));}
+
+  .card{
+    background:var(--bg-card);
+    border:1px solid var(--border-subtle);
+    box-shadow:0 4px 24px rgba(0,0,0,0.3);
+    border-radius:16px;
+    padding:28px;
+    margin-bottom:28px;
+    transition:transform 0.2s ease;
+  }
+  .card:hover{transform:translateY(-2px);}
+  .section-title{
+    font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:0 0 16px;
+  }
+  p{font-size:15px;line-height:1.7;color:var(--text-primary);margin:0 0 10px;}
+  .label{font-size:12px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;}
+
+  #s1{border-left:4px solid var(--accent-blue);}
+  #s2{border-left:4px solid var(--accent-green);}
+  #s3{border-left:4px solid var(--accent-purple);}
+  #s4{border-left:4px solid var(--accent-blue);}
+  #s5{border-left:4px solid var(--accent-red);}
+  #s6{border-left:4px solid var(--accent-green);}
+  #s7{border-left:4px solid var(--accent-gold);background:var(--bg-card-alt);padding:34px;box-shadow:0 0 20px rgba(251,191,36,0.15);}
+  #s8{border-left:4px solid var(--accent-gold);}
+
+  .option-grid{display:flex;flex-direction:column;gap:20px;}
+  .option-card{background:var(--bg-card-alt);border-radius:12px;padding:20px;border:1px solid var(--border-subtle);}
+  .option-card h3{margin:0 0 10px;font-size:17px;font-weight:700;}
+  .tag{display:inline-block;font-size:12px;color:var(--text-secondary);margin-top:8px;}
+  .strength{color:var(--accent-green);}
+  .weakness{color:var(--accent-red);}
+
+  ul{margin:0 0 8px;padding-left:20px;}
+  ul li{font-size:15px;line-height:1.7;margin-bottom:4px;}
+  .bias{color:var(--accent-purple);font-weight:600;}
+
+  .matrix-row{display:flex;align-items:center;margin-bottom:14px;gap:12px;}
+  .matrix-label{width:40%;font-size:13px;color:var(--text-secondary);font-weight:500;}
+  .bar-container{flex:1;height:28px;background:rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;position:relative;}
+  .bar-fill{
+    height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:white;font-weight:700;font-size:12px;
+    width:0%;animation:grow 0.8s ease-out forwards;
+  }
+  .fill-a{background:linear-gradient(90deg,#60a5fa,#3b82f6);}
+  .fill-b{background:linear-gradient(90deg,#34d399,#10b981);}
+  @keyframes grow{from{width:0%;}to{width:var(--target);}}
+  .total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;
+    background:rgba(255,255,255,0.04);border-radius:8px;margin-top:16px;font-weight:800;font-size:16px;}
+  .winner-badge{color:var(--accent-gold);}
+
+  .premortem-option{margin-bottom:22px;}
+  .premortem-option h4{margin:0 0 8px;font-size:15px;font-weight:700;color:var(--accent-red);}
+
+  .day-row{display:flex;gap:10px;margin-bottom:8px;font-size:14px;}
+  .day-num{color:var(--accent-green);font-weight:700;min-width:60px;}
+
+  .verdict-name{font-size:30px;font-weight:800;color:var(--accent-gold);margin:0 0 12px;}
+  .hard-truth{font-style:italic;color:var(--text-secondary);margin-top:14px;}
+
+  .mini-cards{display:flex;gap:16px;flex-wrap:wrap;}
+  .mini-card{
+    flex:1;min-width:180px;background:var(--bg-card-alt);border-radius:12px;padding:16px;
+    display:flex;flex-direction:column;justify-content:space-between;min-height:160px;
+  }
+  .mini-card h5{margin:0 0 8px;font-size:13px;text-transform:uppercase;color:var(--text-secondary);}
+  .watermark{font-size:10px;color:var(--text-secondary);margin-top:12px;text-align:right;}
+
+  footer{text-align:center;margin-top:40px;font-size:12px;color:var(--text-secondary);}
+
+  @media(max-width:600px){
+    .card{padding:16px;}
+    #s7{padding:22px;}
+    .matrix-row{flex-direction:column;align-items:flex-start;}
+    .matrix-label{width:100%;margin-bottom:6px;}
+    .mini-cards{flex-direction:column;}
+    header.banner h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="banner">
+    <h1>DECISION REPORT</h1>
+    <p class="sub">B.Tech Computer Science vs. BBA</p>
+    <p class="date">Generated by Claude AI</p>
+    <div class="gradient-line"></div>
+  </header>
+
+  <section class="card" id="s1">
+    <div class="section-title" style="color:var(--accent-blue);">The Real Decision</div>
+    <p>You're choosing between B.Tech CS and BBA, with a 3-year runway before this needs to be fully resolved. You enjoy technology, but you're also drawn to your family's business — so the real trade-off isn't "which degree is better," it's whether you build a technical skill set or a business-operations skill set first. It's hard because your gut leans BBA, but you haven't said what's actually stopping you from committing to that.</p>
+  </section>
+
+  <section class="card" id="s2">
+    <div class="section-title" style="color:var(--accent-green);">The Case For Each Option</div>
+    <div class="option-grid">
+      <div class="option-card">
+        <h3>Option A — B.Tech Computer Science</h3>
+        <p class="strength"><strong>Strongest case:</strong> Builds hard technical skills that stay valuable regardless of what you do later — including modernizing the family business with tech if you go that route.</p>
+        <p><strong>Hidden upside:</strong> A tech degree is a credential that's hard to pick up casually later. Business operations, by contrast, can often be learned on the job inside the family business itself.</p>
+        <p class="weakness"><strong>Biggest weakness:</strong> If your real interest and opportunity is running the business, four years in CS may delay that transition rather than support it.</p>
+        <p class="tag">Best if you value: keeping technical career options open, even at the cost of a longer detour from the family business.</p>
+      </div>
+      <div class="option-card">
+        <h3>Option B — BBA</h3>
+        <p class="strength"><strong>Strongest case:</strong> Directly prepares you for the path your gut is already pointing to — running or supporting the family business.</p>
+        <p><strong>Hidden upside:</strong> A business degree gives you the language and frameworks to work with your family sooner, and it's often easier to layer tech skills on top of business knowledge (via courses, certifications, or hiring technical people) than the reverse.</p>
+        <p class="weakness"><strong>Biggest weakness:</strong> If the family business path doesn't work out or doesn't materialize the way you expect, you may have narrower options than a technical degree would've given you.</p>
+        <p class="tag">Best if you value: aligning your education with what you're already leaning toward, and getting into the family business sooner.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="s3">
+    <div class="section-title" style="color:var(--accent-purple);">Assumption Buster</div>
+    <p class="label">Assumptions you may be making</p>
+    <ul>
+      <li>That B.Tech CS and BBA are mutually exclusive paths, rather than something you could combine (minor, dual interest, later upskilling).</li>
+      <li>That your interest in technology has to be expressed through a degree, rather than through electives, certifications, or projects layered onto a business degree.</li>
+      <li>That the family business will still need and want you in the same way three years from now — you haven't confirmed this.</li>
+    </ul>
+    <p class="label">Biases at play</p>
+    <ul>
+      <li><span class="bias">Status quo bias</span> — "current life" may be pulling you toward the path that requires the least change from where you are now, rather than the path that's actually best.</li>
+      <li><span class="bias">Ambiguity avoidance</span> — giving vague answers ("current life," "my decisions") may itself be a way of avoiding the discomfort of naming what you're actually afraid of.</li>
+    </ul>
+    <p class="label">What you're definitely ignoring</p>
+    <p>You haven't named what's actually stopping you from just going with your gut (BBA). That missing piece is probably the real decision — not the degree choice itself.</p>
+  </section>
+
+  <section class="card" id="s4">
+    <div class="section-title" style="color:var(--accent-blue);">Decision Matrix</div>
+    <div class="matrix">
+      <div class="matrix-row"><div class="matrix-label">Life/Career Upside</div><div class="bar-container"><div class="bar-fill fill-a" style="--target:70%;animation-delay:0.1s;">7</div></div></div>
+      <div class="matrix-row"><div class="matrix-label"></div><div class="bar-container"><div class="bar-fill fill-b" style="--target:80%;animation-delay:0.15s;">8</div></div></div>
+
+      <div class="matrix-row"><div class="matrix-label">Financial Safety</div><div class="bar-container"><div class="bar-fill fill-a" style="--target:60%;animation-delay:0.2s;">6</div></div></div>
+      <div class="matrix-row"><div class="matrix-label"></div><div class="bar-container"><div class="bar-fill fill-b" style="--target:70%;animation-delay:0.25s;">7</div></div></div>
+
+      <div class="matrix-row"><div class="matrix-label">Growth & Learning</div><div class="bar-container"><div class="bar-fill fill-a" style="--target:80%;animation-delay:0.3s;">8</div></div></div>
+      <div class="matrix-row"><div class="matrix-label"></div><div class="bar-container"><div class="bar-fill fill-b" style="--target:60%;animation-delay:0.35s;">6</div></div></div>
+
+      <div class="matrix-row"><div class="matrix-label">Stress Level (10=low)</div><div class="bar-container"><div class="bar-fill fill-a" style="--target:50%;animation-delay:0.4s;">5</div></div></div>
+      <div class="matrix-row"><div class="matrix-label"></div><div class="bar-container"><div class="bar-fill fill-b" style="--target:70%;animation-delay:0.45s;">7</div></div></div>
+
+      <div class="matrix-row"><div class="matrix-label">Reversibility (10=easy)</div><div class="bar-container"><div class="bar-fill fill-a" style="--target:60%;animation-delay:0.5s;">6</div></div></div>
+      <div class="matrix-row"><div class="matrix-label"></div><div class="bar-container"><div class="bar-fill fill-b" style="--target:80%;animation-delay:0.55s;">8</div></div></div>
+
+      <div class="matrix-row"><div class="matrix-label">Long-term Alignment</div><div class="bar-container"><div class="bar-fill fill-a" style="--target:50%;animation-delay:0.6s;">5</div></div></div>
+      <div class="matrix-row"><div class="matrix-label"></div><div class="bar-container"><div class="bar-fill fill-b" style="--target:80%;animation-delay:0.65s;">8</div></div></div>
+
+      <div class="matrix-row"><div class="matrix-label">Regret Risk (10=low)</div><div class="bar-container"><div class="bar-fill fill-a" style="--target:50%;animation-delay:0.7s;">5</div></div></div>
+      <div class="matrix-row"><div class="matrix-label"></div><div class="bar-container"><div class="bar-fill fill-b" style="--target:70%;animation-delay:0.75s;">7</div></div></div>
+    </div>
+    <div class="total-row">
+      <span>Option A — B.Tech CS: 41/70</span>
+      <span class="winner-badge">Option B — BBA: 53/70 ★</span>
+    </div>
+    <p class="label" style="margin-top:12px;">Scores reflect your stated gut lean toward BBA, your family-business interest, and confirmed reversibility. Financial and career-upside estimates for B.Tech CS are directional only — you didn't provide detailed comparison data.</p>
+  </section>
+
+  <section class="card" id="s5">
+    <div class="section-title" style="color:var(--accent-red);">Premortem — 12 Months Later, It Failed</div>
+    <div class="premortem-option">
+      <h4>Option A — B.Tech CS failed</h4>
+      <ul>
+        <li>You lost interest in coursework because the family business kept pulling your attention.</li>
+        <li>You graduated technically skilled but disconnected from the business you actually wanted to join.</li>
+        <li>The degree didn't translate into either a tech job or business readiness.</li>
+      </ul>
+      <p class="label">Early warning sign: You're spending more energy thinking about the business than your coursework by year one.</p>
+      <p class="label">Prevention: Stay actively involved in the family business part-time throughout the degree, so you're not starting from zero later.</p>
+    </div>
+    <div class="premortem-option">
+      <h4>Option B — BBA failed</h4>
+      <ul>
+        <li>The family business didn't need or want you in the role you expected.</li>
+        <li>You realized your interest in tech was stronger than you admitted, and BBA didn't give you an outlet for it.</li>
+        <li>You felt behind technically compared to peers if you ever needed to pivot.</li>
+      </ul>
+      <p class="label">Early warning sign: You feel restless or under-stimulated in business coursework within the first year.</p>
+      <p class="label">Prevention: Deliberately add tech electives, certifications, or side projects during the BBA so the door back to tech stays open.</p>
+    </div>
+  </section>
+
+  <section class="card" id="s6">
+    <div class="section-title" style="color:var(--accent-green);">7-Day Test Plan</div>
+    <div class="day-row"><span class="day-num">Day 1-2</span><span>Research actual BBA and B.Tech CS program curricula and talk to 2 people in each field.</span></div>
+    <div class="day-row"><span class="day-num">Day 3-4</span><span>Spend one day shadowing or working directly in the family business to gut-check your interest.</span></div>
+    <div class="day-row"><span class="day-num">Day 5-6</span><span>Have the conversation with your family about what role they actually envision for you, and by when.</span></div>
+    <div class="day-row"><span class="day-num">Day 7</span><span>Decide based on: does the family business conversation confirm a real role for you? If yes, BBA. If unclear, revisit B.Tech CS.</span></div>
+  </section>
+
+  <section class="card" id="s7">
+    <div class="section-title" style="color:var(--accent-gold);">The Verdict</div>
+    <div class="verdict-name">BBA</div>
+    <p>It wins because it matches your gut, directly supports your interest in the family business, and you've confirmed this path is reversible if it doesn't work out.</p>
+    <p>What could flip it: if the family business conversation reveals there's no real role waiting for you, or if your tech interest turns out to be stronger than "interest" — closer to a career pull.</p>
+    <p class="hard-truth">The hard truth: you said your gut already says BBA — the real work now isn't choosing, it's naming what's actually stopping you from committing to it.</p>
+  </section>
+
+  <section class="card" id="s8">
+    <div class="section-title" style="color:var(--accent-gold);">Shareable Cards</div>
+    <div class="mini-cards">
+      <div class="mini-card">
+        <h5>Matrix Summary</h5>
+        <p style="font-size:14px;margin:0;">B.Tech CS: <strong>41/70</strong><br>BBA: <strong style="color:var(--accent-gold);">53/70</strong></p>
+        <div class="watermark">Built with Claude AI</div>
+      </div>
+      <div class="mini-card">
+        <h5>Verdict</h5>
+        <p style="font-size:14px;margin:0;"><strong style="color:var(--accent-gold);">BBA wins.</strong><br>It matches your gut and your family-business goal — and it's reversible.</p>
+        <div class="watermark">Built with Claude AI</div>
+      </div>
+      <div class="mini-card">
+        <h5>LinkedIn Hook</h5>
+        <p style="font-size:13px;margin:0;">"I almost let a spreadsheet decide my major.<br>Then I asked myself what I was actually scared of."<br><br>3-line caption + CTA: Share your own tough call below 👇</p>
+        <div class="watermark">Built with Claude AI</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Built with Claude AI | ABTalks 60-Day Challenge</footer>
+</div>
+</body>
+</html>
